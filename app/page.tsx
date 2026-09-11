@@ -1,113 +1,477 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import {
+  Brain, Globe, Bot, Music, Cpu, Zap,
+  Mail, ArrowRight, Sparkles, Code2, Terminal, Layers
+} from 'lucide-react'
+import { FaGithub as Github } from 'react-icons/fa'
+
+// ─── Typing Effect ────────────────────────────────────────────────────────────
+const titles = [
+  'AI Engineer',
+  'Web Developer',
+  'IoT Enthusiast',
+  'Discord Bot Maker',
+  'Music Platform Builder',
+  'Problem Solver',
+]
+
+function TypingText() {
+  const [index, setIndex] = useState(0)
+  const [displayed, setDisplayed] = useState('')
+  const [deleting, setDeleting] = useState(false)
+
+  useEffect(() => {
+    const current = titles[index]
+    let timeout: ReturnType<typeof setTimeout>
+
+    if (!deleting && displayed.length < current.length) {
+      timeout = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), 80)
+    } else if (!deleting && displayed.length === current.length) {
+      timeout = setTimeout(() => setDeleting(true), 2000)
+    } else if (deleting && displayed.length > 0) {
+      timeout = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 50)
+    } else if (deleting && displayed.length === 0) {
+      setDeleting(false)
+      setIndex((prev) => (prev + 1) % titles.length)
+    }
+
+    return () => clearTimeout(timeout)
+  }, [displayed, deleting, index])
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <span className="text-blue-400">
+      {displayed}
+      <span className="cursor text-cyan-400">|</span>
+    </span>
+  )
+}
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+// ─── Skills Data ─────────────────────────────────────────────────────────────
+const skills = [
+  { icon: Brain, label: 'AI & Machine Learning', color: 'from-purple-500 to-blue-500', desc: 'Building intelligent systems & AI-powered apps' },
+  { icon: Globe, label: 'Web Development', color: 'from-blue-500 to-cyan-500', desc: 'Full-stack apps with modern frameworks' },
+  { icon: Bot, label: 'Discord Bots', color: 'from-indigo-500 to-purple-500', desc: 'Automation & community bots' },
+  { icon: Music, label: 'Music Platforms', color: 'from-pink-500 to-rose-500', desc: 'NYRA Music & streaming experiences' },
+  { icon: Cpu, label: 'IoT & ESP32', color: 'from-green-500 to-teal-500', desc: 'Hardware meets software innovation' },
+  { icon: Zap, label: 'Automation', color: 'from-amber-500 to-orange-500', desc: 'Smart scripts & workflow automation' },
+]
+
+// ─── Stat Cards ───────────────────────────────────────────────────────────────
+const stats = [
+  { value: '10+', label: 'Projects Built' },
+  { value: '3+', label: 'Years Coding' },
+  { value: '∞', label: 'Ideas in Queue' },
+  { value: '100%', label: 'Passion' },
+]
+
+// ─── Floating Particles ───────────────────────────────────────────────────────
+function Particles() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {Array.from({ length: 30 }).map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 rounded-full bg-blue-400/30"
+          initial={{
+            x: `${Math.random() * 100}%`,
+            y: `${Math.random() * 100}%`,
+            opacity: 0,
+          }}
+          animate={{
+            y: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
+            opacity: [0, 0.6, 0],
+          }}
+          transition={{
+            duration: Math.random() * 10 + 8,
+            repeat: Infinity,
+            delay: Math.random() * 5,
+            ease: 'linear',
+          }}
         />
-      </div>
+      ))}
+    </div>
+  )
+}
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+// ─── Main Page ────────────────────────────────────────────────────────────────
+export default function HomePage() {
+  const heroRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: heroRef })
+  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0])
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 80])
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+  return (
+    <div className="grid-bg">
+      {/* ── Hero ──────────────────────────────────────────────────────────── */}
+      <section
+        ref={heroRef}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      >
+        <Particles />
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+        {/* Background glow orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+        <motion.div
+          style={{ opacity: heroOpacity, y: heroY }}
+          className="relative z-10 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center"
         >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+          {/* Left — Text */}
+          <div>
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-blue-500/30 text-sm text-blue-300 mb-6"
+            >
+              <Sparkles size={14} className="text-yellow-400" />
+              Open to opportunities
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            </motion.div>
+
+            {/* Name */}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-5xl lg:text-7xl font-black mb-4 leading-tight"
+            >
+              Hi, I&apos;m{' '}
+              <span className="gradient-text block">Sahal</span>
+              <span className="text-white">Shihabudheen</span>
+            </motion.h1>
+
+            {/* Typing */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-2xl lg:text-3xl font-semibold text-slate-300 mb-6 h-10"
+            >
+              <TypingText />
+            </motion.div>
+
+            {/* Bio */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-slate-400 text-lg leading-relaxed mb-8 max-w-xl"
+            >
+              A passionate developer and innovator from Kerala 🇮🇳 who loves turning ideas into
+              real-world projects. From AI apps to music platforms, IoT devices to Discord bots —
+              I&apos;m always building something exciting.
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex flex-wrap gap-4"
+            >
+              <Link href="/projects">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-shadow duration-300"
+                >
+                  View My Work <ArrowRight size={18} />
+                </motion.button>
+              </Link>
+              <Link href="/journey">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl glass border border-blue-500/30 text-slate-300 hover:text-white font-semibold transition-colors"
+                >
+                  My Journey <Layers size={18} />
+                </motion.button>
+              </Link>
+              <motion.a
+                href="https://github.com/sahalshihabudheen-hash"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-2 px-6 py-3 rounded-xl glass border border-white/10 text-slate-400 hover:text-white font-semibold transition-colors"
+              >
+                <Github size={18} /> GitHub
+              </motion.a>
+            </motion.div>
+
+            {/* Stats Row */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="mt-12 grid grid-cols-4 gap-4 border-t border-white/5 pt-8"
+            >
+              {stats.map((stat) => (
+                <div key={stat.label}>
+                  <div className="text-2xl font-black gradient-text">{stat.value}</div>
+                  <div className="text-xs text-slate-500 mt-1">{stat.label}</div>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Right — Photo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.3, type: 'spring' }}
+            className="flex justify-center relative"
+          >
+            {/* Orbit rings */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-[340px] h-[340px] rounded-full border border-blue-500/20 animate-spin" style={{ animationDuration: '20s' }} />
+              <div className="absolute w-[400px] h-[400px] rounded-full border border-cyan-500/10 animate-spin" style={{ animationDuration: '30s', animationDirection: 'reverse' }} />
+            </div>
+
+            {/* Floating tech pills */}
+            {[
+              { label: '🤖 AI', pos: 'top-6 -left-4' },
+              { label: '⚡ IoT', pos: 'top-1/2 -right-8' },
+              { label: '🎵 Music', pos: 'bottom-10 -left-6' },
+              { label: '🌐 Web', pos: 'top-12 -right-4' },
+            ].map((pill) => (
+              <motion.div
+                key={pill.label}
+                className={`absolute ${pill.pos} z-20 glass border border-blue-500/20 px-3 py-1.5 rounded-full text-xs font-semibold text-blue-300`}
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 3, repeat: Infinity, delay: Math.random() * 2 }}
+              >
+                {pill.label}
+              </motion.div>
+            ))}
+
+            {/* Photo */}
+            <div className="relative w-72 h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden glow-blue border-2 border-blue-500/30">
+              <Image
+                src="/images/main-pic.jpg"
+                alt="Sahal Shihabudheen"
+                fill
+                className="object-cover object-top"
+                priority
+              />
+              {/* Overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 via-transparent to-transparent" />
+            </div>
+
+            {/* Glow under photo */}
+            <div className="absolute bottom-0 w-64 h-20 bg-blue-500/20 blur-2xl rounded-full" />
+          </motion.div>
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-600 text-xs"
+        >
+          <span>Scroll down</span>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="w-5 h-8 rounded-full border border-slate-600 flex items-center justify-center"
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* ── About ─────────────────────────────────────────────────────────── */}
+      <section className="py-24 px-6">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="grid lg:grid-cols-2 gap-16 items-center"
+          >
+            {/* Text */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-blue-500/50" />
+                <span className="text-blue-400 text-sm font-semibold tracking-widest uppercase">About Me</span>
+              </div>
+              <h2 className="text-4xl lg:text-5xl font-black mb-6">
+                I turn <span className="gradient-text">ideas</span> into
+                <br />reality
+              </h2>
+              <div className="space-y-4 text-slate-400 leading-relaxed">
+                <p>
+                  I&apos;m <strong className="text-white">Sahal Shihabudheen</strong>, a passionate developer,
+                  innovator, and technology enthusiast who loves turning ideas into real-world projects.
+                </p>
+                <p>
+                  I enjoy building <span className="text-blue-400">AI-powered applications</span>, websites,
+                  Discord bots, music platforms, IoT devices, and other technology projects while
+                  constantly exploring new tools and technologies.
+                </p>
+                <p>
+                  From developing projects like <span className="text-cyan-400">SAI – Smart Assistant for Your Idea</span>{' '}
+                  and <span className="text-pink-400">NYRA Music</span> to experimenting with JARVIS, ESP32,
+                  AI, and automation — I&apos;m always looking for ways to learn, create, and solve problems
+                  through technology.
+                </p>
+                <p>
+                  My goal is to grow as an <strong className="text-white">AI engineer</strong> and build
+                  innovative products that are useful, creative, and impactful.
+                </p>
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                {['Python', 'JavaScript', 'TypeScript', 'Next.js', 'React', 'Node.js', 'ESP32', 'AI/ML'].map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-3 py-1 rounded-full glass border border-blue-500/20 text-blue-300 text-sm"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Terminal Card */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="glass rounded-2xl overflow-hidden border border-blue-500/20 glow-blue"
+            >
+              {/* Terminal header */}
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-black/30">
+                <div className="w-3 h-3 rounded-full bg-red-500/70" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
+                <div className="w-3 h-3 rounded-full bg-green-500/70" />
+                <Terminal size={14} className="ml-2 text-slate-500" />
+                <span className="text-slate-500 text-xs">sahal@dev ~ portfolio</span>
+              </div>
+              {/* Terminal body */}
+              <div className="p-6 font-mono text-sm space-y-3">
+                <div><span className="text-green-400">$</span> <span className="text-slate-300">whoami</span></div>
+                <div className="text-blue-300 pl-2">Sahal Shihabudheen</div>
+                <div><span className="text-green-400">$</span> <span className="text-slate-300">cat skills.json</span></div>
+                <div className="text-slate-400 pl-2 space-y-1">
+                  <div><span className="text-amber-400">&quot;languages&quot;</span>: [<span className="text-green-300">&quot;Python&quot;, &quot;JS&quot;, &quot;TS&quot;</span>],</div>
+                  <div><span className="text-amber-400">&quot;specialty&quot;</span>: <span className="text-green-300">&quot;AI Engineering&quot;</span>,</div>
+                  <div><span className="text-amber-400">&quot;location&quot;</span>: <span className="text-green-300">&quot;Kerala, India 🇮🇳&quot;</span>,</div>
+                  <div><span className="text-amber-400">&quot;status&quot;</span>: <span className="text-cyan-300">&quot;Always building&quot;</span></div>
+                </div>
+                <div><span className="text-green-400">$</span> <span className="text-slate-300">echo $GOAL</span></div>
+                <div className="text-pink-300 pl-2">&quot;Build impactful AI products 🚀&quot;</div>
+                <div className="flex items-center"><span className="text-green-400">$</span> <span className="cursor text-slate-300 ml-2">_</span></div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Skills ────────────────────────────────────────────────────────── */}
+      <section className="py-24 px-6 bg-gradient-to-b from-transparent via-blue-950/10 to-transparent">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-blue-500/20 text-blue-400 text-sm mb-4">
+              <Code2 size={14} /> What I Build
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-black">
+              My <span className="gradient-text">Superpowers</span>
+            </h2>
+            <p className="text-slate-500 mt-3 max-w-lg mx-auto">
+              A diverse toolkit spanning AI, web, hardware, and everything in between.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {skills.map((skill, i) => (
+              <motion.div
+                key={skill.label}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                whileHover={{ y: -6, scale: 1.02 }}
+                className="glass rounded-2xl p-6 border border-white/5 hover:border-blue-500/30 transition-all duration-300 group cursor-default"
+              >
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${skill.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <skill.icon size={22} className="text-white" />
+                </div>
+                <h3 className="font-bold text-white mb-2">{skill.label}</h3>
+                <p className="text-slate-500 text-sm">{skill.desc}</p>
+
+                {/* Shimmer on hover */}
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden pointer-events-none">
+                  <div className="shimmer absolute inset-0" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ───────────────────────────────────────────────────────────── */}
+      <section className="py-24 px-6">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="relative glass rounded-3xl p-12 text-center border border-blue-500/20 overflow-hidden"
+          >
+            {/* Background glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-cyan-600/5 pointer-events-none" />
+            <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="text-5xl mb-4">🚀</div>
+              <h2 className="text-4xl font-black mb-4">
+                Let&apos;s Build <span className="gradient-text">Something Epic</span>
+              </h2>
+              <p className="text-slate-400 mb-8 max-w-md mx-auto">
+                Got an idea? I&apos;m always open to collaborate, learn, and create something that matters.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <motion.a
+                  href="https://github.com/sahalshihabudheen-hash"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg shadow-blue-500/30"
+                >
+                  <Github size={20} /> View GitHub
+                </motion.a>
+                <Link href="/projects">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 px-8 py-4 rounded-xl glass border border-blue-500/30 text-slate-300 hover:text-white font-semibold"
+                  >
+                    Explore Projects <ArrowRight size={18} />
+                  </motion.button>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    </div>
+  )
 }

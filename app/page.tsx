@@ -254,15 +254,7 @@ export default function HomePage() {
                 className="object-cover object-top"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#030712]/60 via-transparent to-transparent" />
-
-              {/* Name overlay at bottom */}
-              <div className="absolute bottom-4 left-4 right-4">
-                <div className="glass rounded-xl px-3 py-2 border border-white/10">
-                  <div className="text-white font-bold text-sm">Sahal Shihabudheen</div>
-                  <div className="text-blue-400 text-xs">Developer & Innovator 🚀</div>
-                </div>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#030712]/30 via-transparent to-transparent" />
             </div>
 
             <div className="absolute bottom-0 w-64 h-20 bg-blue-500/20 blur-2xl rounded-full pointer-events-none" />

@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Brain, Globe, Bot, Music, Cpu, Zap,
-  Mail, ArrowRight, Sparkles, Code2, Terminal, Layers
+  ArrowRight, Sparkles, Code2, Terminal, Layers
 } from 'lucide-react'
 import { FaGithub as Github } from 'react-icons/fa'
 
@@ -28,7 +28,6 @@ function TypingText() {
   useEffect(() => {
     const current = titles[index]
     let timeout: ReturnType<typeof setTimeout>
-
     if (!deleting && displayed.length < current.length) {
       timeout = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), 80)
     } else if (!deleting && displayed.length === current.length) {
@@ -39,7 +38,6 @@ function TypingText() {
       setDeleting(false)
       setIndex((prev) => (prev + 1) % titles.length)
     }
-
     return () => clearTimeout(timeout)
   }, [displayed, deleting, index])
 
@@ -51,7 +49,40 @@ function TypingText() {
   )
 }
 
-// ─── Skills Data ─────────────────────────────────────────────────────────────
+// ─── Particles — client-only to avoid hydration mismatch ─────────────────────
+type Particle = { x: number; y1: number; y2: number; duration: number; delay: number }
+
+function Particles() {
+  const [particles, setParticles] = useState<Particle[]>([])
+
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 25 }, () => ({
+        x: Math.random() * 100,
+        y1: Math.random() * 100,
+        y2: Math.random() * 100,
+        duration: Math.random() * 10 + 8,
+        delay: Math.random() * 5,
+      }))
+    )
+  }, [])
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {particles.map((p, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 rounded-full bg-blue-400/30"
+          initial={{ x: `${p.x}%`, y: `${p.y1}%`, opacity: 0 }}
+          animate={{ y: [`${p.y1}%`, `${p.y2}%`], opacity: [0, 0.6, 0] }}
+          transition={{ duration: p.duration, repeat: Infinity, delay: p.delay, ease: 'linear' }}
+        />
+      ))}
+    </div>
+  )
+}
+
+// ─── Skills ───────────────────────────────────────────────────────────────────
 const skills = [
   { icon: Brain, label: 'AI & Machine Learning', color: 'from-purple-500 to-blue-500', desc: 'Building intelligent systems & AI-powered apps' },
   { icon: Globe, label: 'Web Development', color: 'from-blue-500 to-cyan-500', desc: 'Full-stack apps with modern frameworks' },
@@ -61,7 +92,6 @@ const skills = [
   { icon: Zap, label: 'Automation', color: 'from-amber-500 to-orange-500', desc: 'Smart scripts & workflow automation' },
 ]
 
-// ─── Stat Cards ───────────────────────────────────────────────────────────────
 const stats = [
   { value: '10+', label: 'Projects Built' },
   { value: '3+', label: 'Years Coding' },
@@ -69,62 +99,21 @@ const stats = [
   { value: '100%', label: 'Passion' },
 ]
 
-// ─── Floating Particles ───────────────────────────────────────────────────────
-function Particles() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 30 }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 rounded-full bg-blue-400/30"
-          initial={{
-            x: `${Math.random() * 100}%`,
-            y: `${Math.random() * 100}%`,
-            opacity: 0,
-          }}
-          animate={{
-            y: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
-            opacity: [0, 0.6, 0],
-          }}
-          transition={{
-            duration: Math.random() * 10 + 8,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-            ease: 'linear',
-          }}
-        />
-      ))}
-    </div>
-  )
-}
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function HomePage() {
-  const heroRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: heroRef })
-  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0])
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 80])
-
   return (
     <div className="grid-bg">
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <section
-        ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
-      >
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16">
         <Particles />
 
-        {/* Background glow orbs */}
+        {/* Background orbs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
 
-        <motion.div
-          style={{ opacity: heroOpacity, y: heroY }}
-          className="relative z-10 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center"
-        >
+        <div className="relative z-10 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
           {/* Left — Text */}
           <div>
-            {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -136,7 +125,6 @@ export default function HomePage() {
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
             </motion.div>
 
-            {/* Name */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -144,11 +132,11 @@ export default function HomePage() {
               className="text-5xl lg:text-7xl font-black mb-4 leading-tight"
             >
               Hi, I&apos;m{' '}
-              <span className="gradient-text block">Sahal</span>
-              <span className="text-white">Shihabudheen</span>
+              <span className="gradient-text">Sahal</span>
+              <br />
+              <span className="text-white text-4xl lg:text-5xl">Shihabudheen</span>
             </motion.h1>
 
-            {/* Typing */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -158,7 +146,6 @@ export default function HomePage() {
               <TypingText />
             </motion.div>
 
-            {/* Bio */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -166,11 +153,9 @@ export default function HomePage() {
               className="text-slate-400 text-lg leading-relaxed mb-8 max-w-xl"
             >
               A passionate developer and innovator from Kerala 🇮🇳 who loves turning ideas into
-              real-world projects. From AI apps to music platforms, IoT devices to Discord bots —
-              I&apos;m always building something exciting.
+              real-world projects — from AI apps to music platforms, IoT devices to Discord bots.
             </motion.p>
 
-            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -181,7 +166,7 @@ export default function HomePage() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-shadow duration-300"
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-shadow"
                 >
                   View My Work <ArrowRight size={18} />
                 </motion.button>
@@ -207,12 +192,11 @@ export default function HomePage() {
               </motion.a>
             </motion.div>
 
-            {/* Stats Row */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.7 }}
-              className="mt-12 grid grid-cols-4 gap-4 border-t border-white/5 pt-8"
+              className="mt-10 grid grid-cols-4 gap-4 border-t border-white/5 pt-8"
             >
               {stats.map((stat) => (
                 <div key={stat.label}>
@@ -231,30 +215,38 @@ export default function HomePage() {
             className="flex justify-center relative"
           >
             {/* Orbit rings */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-[340px] h-[340px] rounded-full border border-blue-500/20 animate-spin" style={{ animationDuration: '20s' }} />
-              <div className="absolute w-[400px] h-[400px] rounded-full border border-cyan-500/10 animate-spin" style={{ animationDuration: '30s', animationDirection: 'reverse' }} />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div
+                className="w-[340px] h-[340px] rounded-full border border-blue-500/20"
+                style={{ animation: 'orbit 20s linear infinite' }}
+              />
+              <div
+                className="absolute w-[420px] h-[420px] rounded-full border border-cyan-500/10"
+                style={{ animation: 'orbit 30s linear infinite reverse' }}
+              />
             </div>
 
-            {/* Floating tech pills */}
+            {/* Floating tech pills — fixed delays, no Math.random */}
             {[
-              { label: '🤖 AI', pos: 'top-6 -left-4' },
-              { label: '⚡ IoT', pos: 'top-1/2 -right-8' },
-              { label: '🎵 Music', pos: 'bottom-10 -left-6' },
-              { label: '🌐 Web', pos: 'top-12 -right-4' },
+              { label: '🤖 AI', pos: 'top-6 -left-4', delay: 0 },
+              { label: '⚡ IoT', pos: 'top-1/2 -right-8', delay: 0.5 },
+              { label: '🎵 Music', pos: 'bottom-10 -left-6', delay: 1 },
+              { label: '🌐 Web', pos: 'top-12 -right-4', delay: 1.5 },
             ].map((pill) => (
               <motion.div
                 key={pill.label}
                 className={`absolute ${pill.pos} z-20 glass border border-blue-500/20 px-3 py-1.5 rounded-full text-xs font-semibold text-blue-300`}
                 animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 3, repeat: Infinity, delay: Math.random() * 2 }}
+                transition={{ duration: 3, repeat: Infinity, delay: pill.delay }}
               >
                 {pill.label}
               </motion.div>
             ))}
 
-            {/* Photo */}
-            <div className="relative w-72 h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden glow-blue border-2 border-blue-500/30">
+            {/* Main photo */}
+            <div className="relative w-72 h-80 lg:w-80 lg:h-96 rounded-3xl overflow-hidden border-2 border-blue-500/30"
+              style={{ boxShadow: '0 0 40px rgba(59,130,246,0.2)' }}
+            >
               <Image
                 src="/images/main-pic.jpg"
                 alt="Sahal Shihabudheen"
@@ -262,14 +254,20 @@ export default function HomePage() {
                 className="object-cover object-top"
                 priority
               />
-              {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#030712]/60 via-transparent to-transparent" />
+
+              {/* Name overlay at bottom */}
+              <div className="absolute bottom-4 left-4 right-4">
+                <div className="glass rounded-xl px-3 py-2 border border-white/10">
+                  <div className="text-white font-bold text-sm">Sahal Shihabudheen</div>
+                  <div className="text-blue-400 text-xs">Developer & Innovator 🚀</div>
+                </div>
+              </div>
             </div>
 
-            {/* Glow under photo */}
-            <div className="absolute bottom-0 w-64 h-20 bg-blue-500/20 blur-2xl rounded-full" />
+            <div className="absolute bottom-0 w-64 h-20 bg-blue-500/20 blur-2xl rounded-full pointer-events-none" />
           </motion.div>
-        </motion.div>
+        </div>
 
         {/* Scroll indicator */}
         <motion.div
@@ -299,15 +297,13 @@ export default function HomePage() {
             transition={{ duration: 0.7 }}
             className="grid lg:grid-cols-2 gap-16 items-center"
           >
-            {/* Text */}
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent to-blue-500/50" />
                 <span className="text-blue-400 text-sm font-semibold tracking-widest uppercase">About Me</span>
               </div>
               <h2 className="text-4xl lg:text-5xl font-black mb-6">
-                I turn <span className="gradient-text">ideas</span> into
-                <br />reality
+                I turn <span className="gradient-text">ideas</span> into reality
               </h2>
               <div className="space-y-4 text-slate-400 leading-relaxed">
                 <p>
@@ -322,36 +318,31 @@ export default function HomePage() {
                 <p>
                   From developing projects like <span className="text-cyan-400">SAI – Smart Assistant for Your Idea</span>{' '}
                   and <span className="text-pink-400">NYRA Music</span> to experimenting with JARVIS, ESP32,
-                  AI, and automation — I&apos;m always looking for ways to learn, create, and solve problems
-                  through technology.
+                  AI, and automation — I&apos;m always looking for ways to learn, create, and solve problems.
                 </p>
                 <p>
                   My goal is to grow as an <strong className="text-white">AI engineer</strong> and build
                   innovative products that are useful, creative, and impactful.
                 </p>
               </div>
-
               <div className="mt-8 flex flex-wrap gap-3">
                 {['Python', 'JavaScript', 'TypeScript', 'Next.js', 'React', 'Node.js', 'ESP32', 'AI/ML'].map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-3 py-1 rounded-full glass border border-blue-500/20 text-blue-300 text-sm"
-                  >
+                  <span key={tech} className="px-3 py-1 rounded-full glass border border-blue-500/20 text-blue-300 text-sm">
                     {tech}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* Terminal Card */}
+            {/* Terminal card */}
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="glass rounded-2xl overflow-hidden border border-blue-500/20 glow-blue"
+              className="glass rounded-2xl overflow-hidden border border-blue-500/20"
+              style={{ boxShadow: '0 0 30px rgba(59,130,246,0.1)' }}
             >
-              {/* Terminal header */}
               <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-black/30">
                 <div className="w-3 h-3 rounded-full bg-red-500/70" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
@@ -359,7 +350,6 @@ export default function HomePage() {
                 <Terminal size={14} className="ml-2 text-slate-500" />
                 <span className="text-slate-500 text-xs">sahal@dev ~ portfolio</span>
               </div>
-              {/* Terminal body */}
               <div className="p-6 font-mono text-sm space-y-3">
                 <div><span className="text-green-400">$</span> <span className="text-slate-300">whoami</span></div>
                 <div className="text-blue-300 pl-2">Sahal Shihabudheen</div>
@@ -368,11 +358,11 @@ export default function HomePage() {
                   <div><span className="text-amber-400">&quot;languages&quot;</span>: [<span className="text-green-300">&quot;Python&quot;, &quot;JS&quot;, &quot;TS&quot;</span>],</div>
                   <div><span className="text-amber-400">&quot;specialty&quot;</span>: <span className="text-green-300">&quot;AI Engineering&quot;</span>,</div>
                   <div><span className="text-amber-400">&quot;location&quot;</span>: <span className="text-green-300">&quot;Kerala, India 🇮🇳&quot;</span>,</div>
-                  <div><span className="text-amber-400">&quot;status&quot;</span>: <span className="text-cyan-300">&quot;Always building&quot;</span></div>
+                  <div><span className="text-amber-400">&quot;status&quot;</span>: <span className="text-cyan-300">&quot;Always building 🚀&quot;</span></div>
                 </div>
                 <div><span className="text-green-400">$</span> <span className="text-slate-300">echo $GOAL</span></div>
                 <div className="text-pink-300 pl-2">&quot;Build impactful AI products 🚀&quot;</div>
-                <div className="flex items-center"><span className="text-green-400">$</span> <span className="cursor text-slate-300 ml-2">_</span></div>
+                <div className="flex items-center"><span className="text-green-400">$</span><span className="cursor text-slate-300 ml-2">_</span></div>
               </div>
             </motion.div>
           </motion.div>
@@ -394,9 +384,6 @@ export default function HomePage() {
             <h2 className="text-4xl lg:text-5xl font-black">
               My <span className="gradient-text">Superpowers</span>
             </h2>
-            <p className="text-slate-500 mt-3 max-w-lg mx-auto">
-              A diverse toolkit spanning AI, web, hardware, and everything in between.
-            </p>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -408,18 +395,13 @@ export default function HomePage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 whileHover={{ y: -6, scale: 1.02 }}
-                className="glass rounded-2xl p-6 border border-white/5 hover:border-blue-500/30 transition-all duration-300 group cursor-default"
+                className="glass rounded-2xl p-6 border border-white/5 hover:border-blue-500/30 transition-all duration-300 group cursor-default relative overflow-hidden"
               >
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${skill.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   <skill.icon size={22} className="text-white" />
                 </div>
                 <h3 className="font-bold text-white mb-2">{skill.label}</h3>
                 <p className="text-slate-500 text-sm">{skill.desc}</p>
-
-                {/* Shimmer on hover */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden pointer-events-none">
-                  <div className="shimmer absolute inset-0" />
-                </div>
               </motion.div>
             ))}
           </div>
@@ -435,10 +417,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="relative glass rounded-3xl p-12 text-center border border-blue-500/20 overflow-hidden"
           >
-            {/* Background glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-cyan-600/5 pointer-events-none" />
-            <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-
             <div className="relative z-10">
               <div className="text-5xl mb-4">🚀</div>
               <h2 className="text-4xl font-black mb-4">

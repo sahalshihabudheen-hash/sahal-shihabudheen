@@ -1,64 +1,64 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
-import { useRef } from 'react'
-import { X, ChevronLeft, ChevronRight, MapPin, Calendar, Users, Trophy } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, MapPin, Calendar, Users, Trophy, Sparkles } from 'lucide-react'
 
-// ─── Journey Data ─────────────────────────────────────────────────────────────
+// ─── Journey Data with Real Photos & Exact Coordinates ──────────────────────────
 const milestones = [
   {
     id: 1,
     year: '2020–2022',
     title: '10th Class',
-    subtitle: 'School Days',
-    emoji: '🏫',
+    subtitle: 'School Foundations',
     color: 'from-violet-600 to-purple-500',
-    glowColor: 'rgba(139,92,246,0.4)',
-    borderColor: 'border-violet-500/40',
+    glowColor: 'rgba(139,92,246,0.6)',
+    borderColor: 'border-violet-500',
     description:
-      'The beginning of it all. School days where I first fell in love with computers and technology. These were the foundational years that sparked my curiosity and set me on the path to becoming a developer.',
-    highlights: ['First computer class 💻', 'Discovered programming', 'Top in science & tech'],
+      'The foundational beginning! School days where I first discovered coding, science, and the power of computers. These early years shaped my technical curiosity.',
+    highlights: ['First computer class', 'Basic programming exploration', 'Science & tech enthusiast'],
+    avatar: '/images/journey/10th/class-photo.png',
     images: ['/images/journey/10th/class-photo.png'],
-    x: 10,
-    y: 75,
+    // Coordinates placed accurately along the road line
+    x: 14,
+    y: 72,
   },
   {
     id: 2,
-    year: '2022–2024',
+    year: '2024–2026',
     title: '+1 & +2',
-    subtitle: 'Higher Secondary',
-    emoji: '📚',
+    subtitle: 'Higher Secondary & Squad',
     color: 'from-blue-600 to-cyan-500',
-    glowColor: 'rgba(59,130,246,0.4)',
-    borderColor: 'border-blue-500/40',
+    glowColor: 'rgba(59,130,246,0.6)',
+    borderColor: 'border-blue-500',
     description:
-      'Higher secondary was a blast! Made amazing friends, participated in NSS, celebrated Onam with the squad, and started coding seriously. This is where the developer in me truly woke up.',
-    highlights: ['NSS volunteer 🌿', 'Onam celebrations 🌸', 'Made lifelong friends', 'Started serious coding'],
+      'Higher secondary journey (2024–2026) packed with memorable experiences, brotherhood, NSS community work, grand Onam celebrations, and leveling up my programming skills!',
+    highlights: ['NSS Volunteer Initiatives', 'Onam Festivals & Memories', 'Lifelong Friends & Brotherhood', 'Stepped into serious development'],
+    avatar: '/images/journey/plus2/onam-1.jpg',
     images: [
+      '/images/journey/plus2/onam-1.jpg',
+      '/images/journey/plus2/onam-2.jpg',
       '/images/journey/plus2/nss-1.jpg',
       '/images/journey/plus2/nss-2.jpg',
       '/images/journey/plus2/nss-3.jpg',
       '/images/journey/plus2/nss-4.jpg',
-      '/images/journey/plus2/onam-1.jpg',
-      '/images/journey/plus2/onam-2.jpg',
     ],
-    x: 30,
-    y: 40,
+    x: 32,
+    y: 36,
   },
   {
     id: 3,
     year: '2024',
     title: 'Expo 2024',
-    subtitle: 'District Level',
-    emoji: '🏆',
+    subtitle: 'District-Level Innovation',
     color: 'from-amber-500 to-orange-500',
-    glowColor: 'rgba(245,158,11,0.4)',
-    borderColor: 'border-amber-500/40',
+    glowColor: 'rgba(245,158,11,0.6)',
+    borderColor: 'border-amber-500',
     description:
-      'Went to the district-level expo and represented my school/college. A huge milestone where I got to showcase my technical skills and meet incredible innovators from across the district.',
-    highlights: ['District level 🎖️', 'Project showcase', 'Met innovators', 'Gained recognition'],
+      'Represented at the District Level Expo 2024! Showcased innovative tech projects, interacted with bright minds across the district, and gained huge recognition.',
+    highlights: ['District Level Representation', 'Tech Project Showcase', 'Innovation Networking', 'Honored & Recognized'],
+    avatar: '/images/journey/expo/expo-1.jpg',
     images: [
       '/images/journey/expo/expo-1.jpg',
       '/images/journey/expo/expo-2.jpg',
@@ -66,49 +66,46 @@ const milestones = [
       '/images/journey/expo/expo-4.jpg',
       '/images/journey/expo/expo-5.jpg',
     ],
-    x: 58,
-    y: 68,
+    x: 55,
+    y: 58,
   },
   {
     id: 4,
     year: '2024–Present',
     title: 'Madin Polytechnic',
     subtitle: 'Engineering College',
-    emoji: '🎓',
-    color: 'from-green-600 to-teal-500',
-    glowColor: 'rgba(16,185,129,0.4)',
-    borderColor: 'border-green-500/40',
+    color: 'from-emerald-500 to-teal-500',
+    glowColor: 'rgba(16,185,129,0.6)',
+    borderColor: 'border-emerald-500',
     description:
-      'Currently pursuing my diploma at Madin Polytechnic College, diving deep into engineering and computer science. Building bigger projects, learning every single day, and leveling up as an AI engineer.',
-    highlights: ['Diploma student 📐', 'Building AI projects', 'Learning daily', 'Growing as engineer'],
+      'Diving deep into engineering at Madin Polytechnic College. Hands-on hardware, microcontrollers, networking, and building full-stack software applications daily.',
+    highlights: ['Diploma in Engineering', 'IoT & Embedded Systems', 'Collaborative Tech Culture', 'Photos arriving soon!'],
+    avatar: null, // placeholder badge until user drops pics
     images: [],
-    x: 82,
-    y: 30,
+    x: 75,
+    y: 32,
   },
   {
     id: 5,
     year: 'Future',
     title: 'AI Engineer',
-    subtitle: 'The Dream',
-    emoji: '🚀',
+    subtitle: 'The Vision & Beyond',
     color: 'from-pink-600 to-rose-500',
-    glowColor: 'rgba(236,72,153,0.4)',
-    borderColor: 'border-pink-500/40',
+    glowColor: 'rgba(244,63,94,0.6)',
+    borderColor: 'border-pink-500',
     description:
-      'The destination — becoming a world-class AI engineer and building innovative products that are useful, creative, and impactful. The journey has only just begun!',
-    highlights: ['AI Engineer 🤖', 'Startup founder?', 'Global impact', 'Endless possibilities'],
-    images: [],
-    x: 88,
-    y: 72,
+      'The overarching goal: Becoming a pioneer AI Engineer and architecting transformative AI-driven products, intelligent agents, and automated solutions for the world.',
+    highlights: ['Autonomous AI Systems', 'Next-gen LLM Applications', 'Impactful Tech Products', 'Endless Innovation'],
+    avatar: '/images/main-pic.jpg',
+    images: ['/images/main-pic.jpg'],
+    x: 91,
+    y: 65,
   },
 ]
 
-// SVG road path connecting all milestones
-const ROAD_PATH = 'M 60 380 C 100 350 150 220 230 195 C 290 175 310 250 375 260 C 430 268 450 165 530 148 C 590 135 620 220 680 215 C 730 210 760 190 820 195'
-
 // ─── Image Gallery Modal ──────────────────────────────────────────────────────
-function Gallery({ images, onClose }: { images: string[]; onClose: () => void }) {
-  const [idx, setIdx] = useState(0)
+function GalleryModal({ images, initialIdx, onClose }: { images: string[]; initialIdx: number; onClose: () => void }) {
+  const [idx, setIdx] = useState(initialIdx)
   const prev = () => setIdx((i) => (i - 1 + images.length) % images.length)
   const next = () => setIdx((i) => (i + 1) % images.length)
 
@@ -117,74 +114,56 @@ function Gallery({ images, onClose }: { images: string[]; onClose: () => void })
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
+        initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        className="relative w-full max-w-2xl aspect-video rounded-2xl overflow-hidden"
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="relative w-full max-w-4xl h-[75vh] max-h-[600px] rounded-2xl overflow-hidden glass border border-white/20 flex flex-col justify-center items-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <Image src={images[idx]} alt={`Gallery ${idx + 1}`} fill className="object-cover" />
+        <div className="relative w-full h-full">
+          <Image src={images[idx]} alt={`Photo ${idx + 1}`} fill className="object-contain" priority />
+        </div>
+
         {images.length > 1 && (
           <>
-            <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 glass rounded-full p-2 hover:bg-white/10 transition-colors">
-              <ChevronLeft size={20} />
+            <button
+              onClick={prev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full glass border border-white/20 flex items-center justify-center text-white hover:bg-blue-600/50 transition-colors"
+            >
+              <ChevronLeft size={24} />
             </button>
-            <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 glass rounded-full p-2 hover:bg-white/10 transition-colors">
-              <ChevronRight size={20} />
+            <button
+              onClick={next}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full glass border border-white/20 flex items-center justify-center text-white hover:bg-blue-600/50 transition-colors"
+            >
+              <ChevronRight size={24} />
             </button>
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 glass px-3 py-1.5 rounded-full border border-white/10">
               {images.map((_, i) => (
-                <button key={i} onClick={() => setIdx(i)} className={`w-2 h-2 rounded-full transition-colors ${i === idx ? 'bg-white' : 'bg-white/30'}`} />
+                <button
+                  key={i}
+                  onClick={() => setIdx(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${i === idx ? 'bg-blue-400 w-6' : 'bg-white/40'}`}
+                />
               ))}
             </div>
           </>
         )}
-        <button onClick={onClose} className="absolute top-3 right-3 glass rounded-full p-2 hover:bg-white/10 transition-colors">
-          <X size={16} />
+
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-9 h-9 rounded-full glass border border-white/20 flex items-center justify-center text-white hover:bg-red-500/80 transition-colors"
+        >
+          <X size={18} />
         </button>
-        <div className="absolute bottom-3 right-3 glass px-2 py-1 rounded text-xs">
+        <div className="absolute top-4 left-4 glass px-3 py-1 rounded-full text-xs text-white/90 border border-white/10">
           {idx + 1} / {images.length}
         </div>
       </motion.div>
-    </motion.div>
-  )
-}
-
-// ─── Milestone Card ───────────────────────────────────────────────────────────
-function MilestoneCard({ milestone, isActive, onClick }: {
-  milestone: typeof milestones[0]
-  isActive: boolean
-  onClick: () => void
-}) {
-  return (
-    <motion.div
-      className="absolute z-20 cursor-pointer"
-      style={{ left: `${milestone.x}%`, top: `${milestone.y}%` }}
-      animate={{ scale: isActive ? 1.2 : 1 }}
-      onClick={onClick}
-    >
-      {/* Pulse ring */}
-      <motion.div
-        className={`absolute inset-0 rounded-full bg-gradient-to-br ${milestone.color}`}
-        animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-      {/* Marker */}
-      <motion.div
-        whileHover={{ scale: 1.2 }}
-        className={`relative w-14 h-14 rounded-full bg-gradient-to-br ${milestone.color} flex items-center justify-center text-2xl shadow-lg border-2 border-white/20`}
-        style={{ boxShadow: `0 0 20px ${milestone.glowColor}` }}
-      >
-        {milestone.emoji}
-      </motion.div>
-      {/* Label */}
-      <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap glass px-2 py-1 rounded-lg text-xs font-semibold text-white border border-white/10">
-        {milestone.title}
-      </div>
     </motion.div>
   )
 }
@@ -193,82 +172,98 @@ function MilestoneCard({ milestone, isActive, onClick }: {
 function DetailPanel({
   milestone,
   onClose,
-  onGallery,
+  onOpenPhoto,
 }: {
   milestone: typeof milestones[0]
   onClose: () => void
-  onGallery: () => void
+  onOpenPhoto: (index: number) => void
 }) {
   return (
     <motion.div
-      initial={{ x: 40, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: 40, opacity: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      className="glass rounded-2xl border border-white/10 overflow-hidden"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      className="glass rounded-3xl border border-white/15 overflow-hidden shadow-2xl backdrop-blur-xl"
     >
-      {/* Header */}
-      <div className={`bg-gradient-to-r ${milestone.color} p-6 relative`}>
-        <button onClick={onClose} className="absolute top-4 right-4 w-7 h-7 rounded-full bg-black/20 flex items-center justify-center hover:bg-black/40 transition-colors">
-          <X size={14} />
+      {/* Top Banner */}
+      <div className={`relative bg-gradient-to-r ${milestone.color} p-6 sm:p-8 text-white overflow-hidden`}>
+        <div className="absolute top-0 right-0 w-60 h-60 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/30 hover:bg-black/60 flex items-center justify-center transition-colors text-white"
+        >
+          <X size={16} />
         </button>
-        <div className="text-4xl mb-2">{milestone.emoji}</div>
-        <h3 className="text-2xl font-black text-white">{milestone.title}</h3>
-        <p className="text-white/80 text-sm">{milestone.subtitle}</p>
-        <div className="flex items-center gap-1 mt-2 text-white/70 text-xs">
-          <Calendar size={12} />
-          {milestone.year}
+
+        <div className="flex items-center gap-4">
+          {milestone.avatar ? (
+            <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/40 shadow-lg flex-shrink-0">
+              <Image src={milestone.avatar} alt={milestone.title} fill className="object-cover" />
+            </div>
+          ) : (
+            <div className="w-16 h-16 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center text-2xl font-bold flex-shrink-0">
+              🎓
+            </div>
+          )}
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-black/20 text-xs font-semibold tracking-wider mb-1">
+              <Calendar size={12} />
+              {milestone.year}
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-black">{milestone.title}</h3>
+            <p className="text-white/80 text-sm">{milestone.subtitle}</p>
+          </div>
         </div>
       </div>
 
-      {/* Body */}
-      <div className="p-6 space-y-5">
-        <p className="text-slate-400 text-sm leading-relaxed">{milestone.description}</p>
+      {/* Content */}
+      <div className="p-6 sm:p-8 space-y-6">
+        <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{milestone.description}</p>
 
         {/* Highlights */}
         <div>
-          <h4 className="text-white text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
-            <Trophy size={12} className="text-yellow-400" /> Highlights
+          <h4 className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2">
+            <Trophy size={14} className="text-amber-400" /> Key Milestones & Memories
           </h4>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {milestone.highlights.map((h) => (
-              <div key={h} className="flex items-center gap-2 text-slate-400 text-xs">
-                <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-br ${milestone.color}`} />
-                {h}
+              <div key={h} className="flex items-center gap-2 text-xs sm:text-sm text-slate-300 glass px-3 py-2 rounded-xl border border-white/5">
+                <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${milestone.color} flex-shrink-0`} />
+                <span>{h}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Gallery preview */}
-        {milestone.images.length > 0 && (
+        {/* Clickable Image Showcase */}
+        {milestone.images.length > 0 ? (
           <div>
-            <h4 className="text-white text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Users size={12} className="text-blue-400" /> Photos
-            </h4>
-            <div className="grid grid-cols-3 gap-2">
-              {milestone.images.slice(0, 3).map((img, i) => (
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-cyan-400 flex items-center gap-2">
+                <Users size={14} /> Memories & Photos ({milestone.images.length})
+              </h4>
+              <span className="text-xs text-slate-400">Click to view full photo</span>
+            </div>
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
+              {milestone.images.map((img, i) => (
                 <motion.div
                   key={img}
                   whileHover={{ scale: 1.05 }}
-                  onClick={onGallery}
-                  className="relative aspect-square rounded-lg overflow-hidden cursor-pointer"
+                  whileTap={{ scale: 0.96 }}
+                  onClick={() => onOpenPhoto(i)}
+                  className="relative aspect-square rounded-xl overflow-hidden cursor-pointer border border-white/10 hover:border-cyan-400/50 shadow-md group"
                 >
-                  <Image src={img} alt={`${milestone.title} ${i + 1}`} fill className="object-cover" />
-                  {i === 2 && milestone.images.length > 3 && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold text-sm">
-                      +{milestone.images.length - 3}
-                    </div>
-                  )}
+                  <Image src={img} alt={`Memory ${i + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-300" />
+                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <Sparkles size={16} className="text-cyan-300" />
+                  </div>
                 </motion.div>
               ))}
             </div>
           </div>
-        )}
-
-        {milestone.images.length === 0 && (
-          <div className="text-center py-4 text-slate-600 text-sm border border-dashed border-white/5 rounded-xl">
-            📸 Photos coming soon...
+        ) : (
+          <div className="p-6 rounded-2xl border border-dashed border-white/15 text-center text-slate-400 text-sm">
+            📸 <span className="font-semibold text-white">Madin Polytechnic Photos</span> will be added here soon!
           </div>
         )}
       </div>
@@ -276,255 +271,197 @@ function DetailPanel({
   )
 }
 
-// ─── Animated SVG Road ────────────────────────────────────────────────────────
-function RoadMap({ active, onSelect }: { active: number | null; onSelect: (id: number) => void }) {
-  const ref = useRef<SVGSVGElement>(null)
-  const inView = useInView(ref, { once: true })
-
-  return (
-    <div className="relative w-full" style={{ height: '480px' }}>
-      {/* SVG Road */}
-      <svg
-        ref={ref}
-        viewBox="0 60 900 360"
-        className="absolute inset-0 w-full h-full"
-        preserveAspectRatio="none"
-      >
-        {/* Road shadow */}
-        <path d={ROAD_PATH} stroke="rgba(0,0,0,0.5)" strokeWidth="22" fill="none" strokeLinecap="round" />
-        {/* Road base */}
-        <path d={ROAD_PATH} stroke="#1e293b" strokeWidth="18" fill="none" strokeLinecap="round" />
-        {/* Road dashes */}
-        <path
-          d={ROAD_PATH}
-          stroke="rgba(148,163,184,0.2)"
-          strokeWidth="2"
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray="12 20"
-        />
-        {/* Animated glow */}
-        {inView && (
-          <motion.path
-            d={ROAD_PATH}
-            stroke="url(#roadGlow)"
-            strokeWidth="4"
-            fill="none"
-            strokeLinecap="round"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 1 }}
-            transition={{ duration: 3, ease: 'easeInOut' }}
-          />
-        )}
-        <defs>
-          <linearGradient id="roadGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.8" />
-            <stop offset="30%" stopColor="#3b82f6" stopOpacity="0.8" />
-            <stop offset="60%" stopColor="#f59e0b" stopOpacity="0.8" />
-            <stop offset="80%" stopColor="#10b981" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#ec4899" stopOpacity="0.8" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      {/* Milestone markers — positioned absolutely over SVG */}
-      <div className="absolute inset-0">
-        {milestones.map((m, i) => (
-          <motion.div
-            key={m.id}
-            className="absolute"
-            style={{ left: `${m.x}%`, top: `${m.y}%`, transform: 'translate(-50%, -50%)' }}
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 1 + i * 0.4, type: 'spring', stiffness: 300, damping: 20 }}
-          >
-            {/* Pulse */}
-            {active !== m.id && (
-              <motion.div
-                className={`absolute inset-0 rounded-full bg-gradient-to-br ${m.color} opacity-40`}
-                animate={{ scale: [1, 2.5], opacity: [0.4, 0] }}
-                transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-              />
-            )}
-
-            {/* Marker button */}
-            <motion.button
-              onClick={() => onSelect(m.id)}
-              whileHover={{ scale: 1.25 }}
-              whileTap={{ scale: 0.9 }}
-              className={`relative w-14 h-14 rounded-full bg-gradient-to-br ${m.color} flex items-center justify-center text-2xl border-2 border-white/20 shadow-lg transition-transform`}
-              style={{
-                boxShadow: `0 0 ${active === m.id ? '30px' : '15px'} ${m.glowColor}`,
-              }}
-            >
-              {m.emoji}
-            </motion.button>
-
-            {/* Label */}
-            <motion.div
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5 + i * 0.4 }}
-              className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap"
-            >
-              <div className="glass px-2.5 py-1 rounded-lg text-[11px] font-semibold text-white/90 border border-white/10 shadow-lg text-center">
-                <div>{m.title}</div>
-                <div className={`text-[10px] bg-gradient-to-r ${m.color} bg-clip-text text-transparent`}>{m.year}</div>
-              </div>
-            </motion.div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Main Roadmap Map Component ──────────────────────────────────────────────
 export default function JourneyPage() {
-  const [active, setActive] = useState<number | null>(1)
-  const [gallery, setGallery] = useState(false)
+  const [active, setActive] = useState<number>(2) // default to +1 & +2
+  const [galleryIdx, setGalleryIdx] = useState<number | null>(null)
+  const mapRef = useRef<HTMLDivElement>(null)
+  const inView = useInView(mapRef, { once: true })
 
-  const activeMilestone = milestones.find((m) => m.id === active) ?? null
-
-  const handleSelect = (id: number) => {
-    setActive((prev) => (prev === id ? null : id))
-  }
+  const activeMilestone = milestones.find((m) => m.id === active) || milestones[0]
 
   return (
-    <div className="min-h-screen grid-bg pt-24 pb-16">
-      {/* Hero text */}
-      <div className="max-w-7xl mx-auto px-6 mb-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-blue-500/20 text-blue-400 text-sm mb-4">
-            <MapPin size={14} /> Life Journey
+    <div className="min-h-screen grid-bg pt-24 pb-20">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-6 mb-10 text-center">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass border border-blue-500/30 text-blue-400 text-sm mb-4">
+            <MapPin size={15} /> Real Journey Roadmap
           </div>
-          <h1 className="text-5xl lg:text-6xl font-black mb-4">
-            My <span className="gradient-text">Roadmap</span>
+          <h1 className="text-4xl sm:text-6xl font-black mb-4 tracking-tight">
+            My <span className="gradient-text">Milestone Map</span>
           </h1>
-          <p className="text-slate-500 max-w-lg mx-auto">
-            Click on each milestone to explore the stories, memories, and moments that shaped who I am.
+          <p className="text-slate-400 max-w-xl mx-auto text-sm sm:text-base">
+            Click directly on any photo marker along the road to open up the memories, moments, and projects of that stage!
           </p>
         </motion.div>
       </div>
 
-      {/* Main content */}
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-3 gap-8 items-start">
-          {/* Map — takes 2 cols */}
-          <div className="lg:col-span-2">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="glass rounded-3xl border border-blue-500/10 p-6 relative overflow-hidden"
-            >
-              {/* Background texture */}
-              <div className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage: `radial-gradient(circle at 20% 50%, rgba(139,92,246,0.08) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 20%, rgba(59,130,246,0.08) 0%, transparent 50%),
-                    radial-gradient(circle at 60% 80%, rgba(245,158,11,0.06) 0%, transparent 40%)`
-                }}
-              />
-              <div className="relative">
-                <RoadMap active={active} onSelect={handleSelect} />
-              </div>
+      {/* Main Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
+        {/* ROADMAP CANVAS */}
+        <div ref={mapRef} className="glass rounded-3xl border border-blue-500/20 p-4 sm:p-8 relative overflow-hidden shadow-2xl">
+          {/* Subtle glow nodes */}
+          <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
-              {/* Legend */}
-              <div className="mt-16 flex flex-wrap justify-center gap-4">
-                {milestones.map((m) => (
-                  <button
-                    key={m.id}
-                    onClick={() => handleSelect(m.id)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                      active === m.id
+          {/* Map canvas container */}
+          <div className="relative w-full h-[380px] sm:h-[460px] bg-slate-950/60 rounded-2xl border border-white/5 overflow-hidden">
+            {/* SVG Highway Path */}
+            <svg
+              viewBox="0 0 1000 460"
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <linearGradient id="roadGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#8b5cf6" />
+                  <stop offset="30%" stopColor="#3b82f6" />
+                  <stop offset="55%" stopColor="#f59e0b" />
+                  <stop offset="78%" stopColor="#10b981" />
+                  <stop offset="100%" stopColor="#ec4899" />
+                </linearGradient>
+                <filter id="roadGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="6" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+
+              {/* Road bed shadow */}
+              <path
+                d="M 140 330 C 220 330 260 165 320 165 C 400 165 480 267 550 267 C 640 267 690 147 750 147 C 820 147 860 300 910 300"
+                stroke="rgba(15, 23, 42, 0.9)"
+                strokeWidth="32"
+                fill="none"
+                strokeLinecap="round"
+              />
+
+              {/* Glowing Road Border */}
+              <path
+                d="M 140 330 C 220 330 260 165 320 165 C 400 165 480 267 550 267 C 640 267 690 147 750 147 C 820 147 860 300 910 300"
+                stroke="url(#roadGradient)"
+                strokeWidth="14"
+                fill="none"
+                strokeLinecap="round"
+                opacity="0.8"
+                filter="url(#roadGlowFilter)"
+              />
+
+              {/* Center dashed line */}
+              <motion.path
+                d="M 140 330 C 220 330 260 165 320 165 C 400 165 480 267 550 267 C 640 267 690 147 750 147 C 820 147 860 300 910 300"
+                stroke="#ffffff"
+                strokeWidth="2.5"
+                strokeDasharray="10 14"
+                fill="none"
+                strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                animate={inView ? { pathLength: 1 } : {}}
+                transition={{ duration: 2.5, ease: 'easeInOut' }}
+              />
+            </svg>
+
+            {/* REAL PHOTO MARKERS on the Map */}
+            {milestones.map((m) => {
+              const isSelected = active === m.id
+              return (
+                <div
+                  key={m.id}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20 group"
+                  style={{ left: `${m.x}%`, top: `${m.y}%` }}
+                  onClick={() => setActive(m.id)}
+                >
+                  {/* Outer pulse wave */}
+                  {isSelected && (
+                    <motion.div
+                      className={`absolute inset-0 rounded-full bg-gradient-to-r ${m.color}`}
+                      animate={{ scale: [1, 2.2], opacity: [0.7, 0] }}
+                      transition={{ duration: 1.8, repeat: Infinity }}
+                    />
+                  )}
+
+                  {/* Photo Pin Avatar */}
+                  <motion.div
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-3 shadow-2xl transition-all duration-300 ${
+                      isSelected
+                        ? `border-white ring-4 ring-offset-2 ring-offset-slate-950 ${m.borderColor}`
+                        : 'border-white/50 opacity-90 group-hover:opacity-100 group-hover:border-white'
+                    }`}
+                    style={{
+                      boxShadow: isSelected ? `0 0 30px ${m.glowColor}` : '0 10px 20px rgba(0,0,0,0.5)',
+                    }}
+                  >
+                    {m.avatar ? (
+                      <Image src={m.avatar} alt={m.title} fill className="object-cover" />
+                    ) : (
+                      <div className={`w-full h-full bg-gradient-to-br ${m.color} flex items-center justify-center text-2xl font-bold text-white`}>
+                        🎓
+                      </div>
+                    )}
+                  </motion.div>
+
+                  {/* Label badge beneath marker */}
+                  <div
+                    className={`absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-2.5 py-0.5 rounded-full text-xs font-bold transition-all ${
+                      isSelected
                         ? `bg-gradient-to-r ${m.color} text-white shadow-lg`
-                        : 'glass text-slate-400 hover:text-white border border-white/10'
+                        : 'glass text-slate-300 group-hover:text-white border border-white/10'
                     }`}
                   >
-                    <span>{m.emoji}</span> {m.title}
-                  </button>
-                ))}
-              </div>
-            </motion.div>
+                    {m.title}
+                  </div>
+                </div>
+              )
+            })}
           </div>
 
-          {/* Detail panel */}
-          <div className="lg:col-span-1 sticky top-28">
-            <AnimatePresence mode="wait">
-              {activeMilestone ? (
-                <DetailPanel
-                  key={activeMilestone.id}
-                  milestone={activeMilestone}
-                  onClose={() => setActive(null)}
-                  onGallery={() => setGallery(true)}
-                />
-              ) : (
-                <motion.div
-                  key="empty"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="glass rounded-2xl border border-white/5 p-8 text-center"
-                >
-                  <div className="text-5xl mb-4">👆</div>
-                  <p className="text-slate-500 text-sm">
-                    Click a milestone on the map to explore that chapter of my journey
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          {/* Quick Selector Bar */}
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            {milestones.map((m) => (
+              <button
+                key={m.id}
+                onClick={() => setActive(m.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                  active === m.id
+                    ? `bg-gradient-to-r ${m.color} text-white shadow-lg shadow-blue-500/20 scale-105`
+                    : 'glass text-slate-400 hover:text-white border border-white/10'
+                }`}
+              >
+                {m.avatar ? (
+                  <div className="relative w-5 h-5 rounded-full overflow-hidden border border-white/40">
+                    <Image src={m.avatar} alt={m.title} fill className="object-cover" />
+                  </div>
+                ) : (
+                  <span>🎓</span>
+                )}
+                <span>{m.title}</span>
+                <span className="text-white/60 text-[11px] font-normal">({m.year})</span>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Timeline strip below */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="mt-16"
-        >
-          <h2 className="text-2xl font-bold text-center mb-8 text-slate-300">
-            Timeline at a Glance
-          </h2>
-          <div className="relative">
-            {/* Line */}
-            <div className="absolute left-0 right-0 top-5 h-0.5 bg-gradient-to-r from-violet-500 via-blue-500 via-amber-500 to-green-500 opacity-30" />
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {milestones.map((m, i) => (
-                <motion.div
-                  key={m.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.15 }}
-                  onClick={() => handleSelect(m.id)}
-                  className={`relative cursor-pointer pt-10 text-center ${active === m.id ? 'opacity-100' : 'opacity-60 hover:opacity-100'} transition-opacity`}
-                >
-                  {/* Dot on line */}
-                  <div className={`absolute top-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-gradient-to-br ${m.color} border-2 border-[#030712] shadow-lg`}
-                    style={{ boxShadow: `0 0 10px ${m.glowColor}` }}
-                  />
-                  <div className="text-2xl">{m.emoji}</div>
-                  <div className="text-xs font-bold text-white mt-1">{m.title}</div>
-                  <div className="text-[10px] text-slate-500">{m.year}</div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+        {/* ACTIVE MILESTONE DETAIL PANEL */}
+        <AnimatePresence mode="wait">
+          <DetailPanel
+            key={activeMilestone.id}
+            milestone={activeMilestone}
+            onClose={() => {}}
+            onOpenPhoto={(idx) => setGalleryIdx(idx)}
+          />
+        </AnimatePresence>
       </div>
 
-      {/* Gallery Modal */}
+      {/* FULLSCREEN PHOTO GALLERY MODAL */}
       <AnimatePresence>
-        {gallery && activeMilestone && activeMilestone.images.length > 0 && (
-          <Gallery images={activeMilestone.images} onClose={() => setGallery(false)} />
+        {galleryIdx !== null && activeMilestone.images.length > 0 && (
+          <GalleryModal
+            images={activeMilestone.images}
+            initialIdx={galleryIdx}
+            onClose={() => setGalleryIdx(null)}
+          />
         )}
       </AnimatePresence>
     </div>

@@ -349,6 +349,66 @@ export default function JourneyPage() {
         {/* Responsive map container */}
         <div className="w-full overflow-x-auto scrollbar-none">
           <div className="relative min-w-[860px] w-full h-[460px] sm:h-[500px]">
+            {/* SVG Road Path (Unlocked stages only: 10th Class -> +1/+2 -> Expo 2024 -> Madin Polytechnic) */}
+            <svg
+              viewBox="0 0 1000 460"
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <filter id="blueGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="6" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+
+              {/* Road bed shadow / subtle background track */}
+              <path
+                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 578 110 590 110"
+                stroke="rgba(59, 130, 246, 0.15)"
+                strokeWidth="24"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Luminous Road Glow */}
+              <path
+                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 578 110 590 110"
+                stroke="#3b82f6"
+                strokeWidth="8"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.5"
+                filter="url(#blueGlowFilter)"
+              />
+
+              {/* Solid Blue Path */}
+              <path
+                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 578 110 590 110"
+                stroke="#3b82f6"
+                strokeWidth="3.5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Animated Center Flow Line */}
+              <motion.path
+                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 578 110 590 110"
+                stroke="#93c5fd"
+                strokeWidth="2"
+                strokeDasharray="10 14"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 2, ease: 'easeInOut' }}
+              />
+            </svg>
+
             {/* REAL PHOTO MARKERS on the Zigzag vertices */}
             {milestones.map((m) => {
               const isSelected = active === m.id

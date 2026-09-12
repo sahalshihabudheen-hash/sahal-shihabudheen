@@ -8,7 +8,6 @@ import {
   Brain, Globe, Bot, Music, Cpu, Zap,
   ArrowRight, Sparkles, Code2, Layers
 } from 'lucide-react'
-import { FaGithub as Github } from 'react-icons/fa'
 
 // ─── Typing Effect ────────────────────────────────────────────────────────────
 const titles = [
@@ -178,16 +177,7 @@ export default function HomePage() {
                   My Journey <Layers size={18} />
                 </motion.button>
               </Link>
-              <motion.a
-                href="https://github.com/sahalshihabudheen-hash"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl glass border border-white/10 text-slate-400 hover:text-white font-semibold transition-colors"
-              >
-                <Github size={18} /> GitHub
-              </motion.a>
+
             </motion.div>
 
             <motion.div

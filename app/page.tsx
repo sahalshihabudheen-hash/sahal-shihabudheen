@@ -93,8 +93,6 @@ const skills = [
 ]
 
 const stats = [
-  { value: '10+', label: 'Projects Built' },
-  { value: '3+', label: 'Years Coding' },
   { value: '∞', label: 'Ideas in Queue' },
   { value: '100%', label: 'Passion' },
 ]
@@ -196,7 +194,7 @@ export default function HomePage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.7 }}
-              className="mt-10 grid grid-cols-4 gap-4 border-t border-white/5 pt-8"
+              className="mt-10 flex gap-10 border-t border-white/5 pt-8"
             >
               {stats.map((stat) => (
                 <div key={stat.label}>

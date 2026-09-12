@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
   Brain, Globe, Bot, Music, Cpu, Zap,
-  ArrowRight, Sparkles, Code2, Terminal, Layers
+  ArrowRight, Sparkles, Code2, Layers
 } from 'lucide-react'
 import { FaGithub as Github } from 'react-icons/fa'
 
@@ -214,34 +214,6 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.3, type: 'spring' }}
             className="flex justify-center relative"
           >
-            {/* Orbit rings */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div
-                className="w-[340px] h-[340px] rounded-full border border-blue-500/20"
-                style={{ animation: 'orbit 20s linear infinite' }}
-              />
-              <div
-                className="absolute w-[420px] h-[420px] rounded-full border border-cyan-500/10"
-                style={{ animation: 'orbit 30s linear infinite reverse' }}
-              />
-            </div>
-
-            {/* Floating tech pills — fixed delays, no Math.random */}
-            {[
-              { label: '🤖 AI', pos: 'top-6 -left-4', delay: 0 },
-              { label: '⚡ IoT', pos: 'top-1/2 -right-8', delay: 0.5 },
-              { label: '🎵 Music', pos: 'bottom-10 -left-6', delay: 1 },
-              { label: '🌐 Web', pos: 'top-12 -right-4', delay: 1.5 },
-            ].map((pill) => (
-              <motion.div
-                key={pill.label}
-                className={`absolute ${pill.pos} z-20 glass border border-blue-500/20 px-3 py-1.5 rounded-full text-xs font-semibold text-blue-300`}
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 3, repeat: Infinity, delay: pill.delay }}
-              >
-                {pill.label}
-              </motion.div>
-            ))}
 
             {/* Main photo */}
             <div className="relative w-72 h-80 lg:w-80 lg:h-96 rounded-3xl overflow-hidden border-2 border-blue-500/30"
@@ -281,82 +253,47 @@ export default function HomePage() {
 
       {/* ── About ─────────────────────────────────────────────────────────── */}
       <section className="py-24 px-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="grid lg:grid-cols-2 gap-16 items-center"
           >
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-blue-500/50" />
-                <span className="text-blue-400 text-sm font-semibold tracking-widest uppercase">About Me</span>
-              </div>
-              <h2 className="text-4xl lg:text-5xl font-black mb-6">
-                I turn <span className="gradient-text">ideas</span> into reality
-              </h2>
-              <div className="space-y-4 text-slate-400 leading-relaxed">
-                <p>
-                  I&apos;m <strong className="text-white">Sahal Shihabudheen</strong>, a passionate developer,
-                  innovator, and technology enthusiast who loves turning ideas into real-world projects.
-                </p>
-                <p>
-                  I enjoy building <span className="text-blue-400">AI-powered applications</span>, websites,
-                  Discord bots, music platforms, IoT devices, and other technology projects while
-                  constantly exploring new tools and technologies.
-                </p>
-                <p>
-                  From developing projects like <span className="text-cyan-400">SAI – Smart Assistant for Your Idea</span>{' '}
-                  and <span className="text-pink-400">NYRA Music</span> to experimenting with JARVIS, ESP32,
-                  AI, and automation — I&apos;m always looking for ways to learn, create, and solve problems.
-                </p>
-                <p>
-                  My goal is to grow as an <strong className="text-white">AI engineer</strong> and build
-                  innovative products that are useful, creative, and impactful.
-                </p>
-              </div>
-              <div className="mt-8 flex flex-wrap gap-3">
-                {['Python', 'JavaScript', 'TypeScript', 'Next.js', 'React', 'Node.js', 'ESP32', 'AI/ML'].map((tech) => (
-                  <span key={tech} className="px-3 py-1 rounded-full glass border border-blue-500/20 text-blue-300 text-sm">
-                    {tech}
-                  </span>
-                ))}
-              </div>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-blue-400 text-sm font-semibold tracking-widest uppercase">About Me</span>
+              <div className="h-px flex-1 bg-gradient-to-r from-blue-500/50 to-transparent" />
             </div>
-
-            {/* Terminal card */}
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="glass rounded-2xl overflow-hidden border border-blue-500/20"
-              style={{ boxShadow: '0 0 30px rgba(59,130,246,0.1)' }}
-            >
-              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-black/30">
-                <div className="w-3 h-3 rounded-full bg-red-500/70" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
-                <div className="w-3 h-3 rounded-full bg-green-500/70" />
-                <Terminal size={14} className="ml-2 text-slate-500" />
-                <span className="text-slate-500 text-xs">sahal@dev ~ portfolio</span>
-              </div>
-              <div className="p-6 font-mono text-sm space-y-3">
-                <div><span className="text-green-400">$</span> <span className="text-slate-300">whoami</span></div>
-                <div className="text-blue-300 pl-2">Sahal Shihabudheen</div>
-                <div><span className="text-green-400">$</span> <span className="text-slate-300">cat skills.json</span></div>
-                <div className="text-slate-400 pl-2 space-y-1">
-                  <div><span className="text-amber-400">&quot;languages&quot;</span>: [<span className="text-green-300">&quot;Python&quot;, &quot;JS&quot;, &quot;TS&quot;</span>],</div>
-                  <div><span className="text-amber-400">&quot;specialty&quot;</span>: <span className="text-green-300">&quot;AI Engineering&quot;</span>,</div>
-                  <div><span className="text-amber-400">&quot;location&quot;</span>: <span className="text-green-300">&quot;Kerala, India 🇮🇳&quot;</span>,</div>
-                  <div><span className="text-amber-400">&quot;status&quot;</span>: <span className="text-cyan-300">&quot;Always building 🚀&quot;</span></div>
-                </div>
-                <div><span className="text-green-400">$</span> <span className="text-slate-300">echo $GOAL</span></div>
-                <div className="text-pink-300 pl-2">&quot;Build impactful AI products 🚀&quot;</div>
-                <div className="flex items-center"><span className="text-green-400">$</span><span className="cursor text-slate-300 ml-2">_</span></div>
-              </div>
-            </motion.div>
+            <h2 className="text-4xl lg:text-5xl font-black mb-6">
+              I turn <span className="gradient-text">ideas</span> into reality
+            </h2>
+            <div className="space-y-4 text-slate-400 leading-relaxed text-lg">
+              <p>
+                I&apos;m <strong className="text-white">Sahal Shihabudheen</strong>, a passionate developer,
+                innovator, and technology enthusiast who loves turning ideas into real-world projects.
+              </p>
+              <p>
+                I enjoy building <span className="text-blue-400">AI-powered applications</span>, websites,
+                Discord bots, music platforms, IoT devices, and other technology projects while
+                constantly exploring new tools and technologies.
+              </p>
+              <p>
+                From developing projects like <span className="text-cyan-400">SAI – Smart Assistant for Your Idea</span>{' '}
+                and <span className="text-pink-400">NYRA Music</span> to experimenting with JARVIS, ESP32,
+                AI, and automation — I&apos;m always looking for ways to learn, create, and solve problems.
+              </p>
+              <p>
+                My goal is to grow as an <strong className="text-white">AI engineer</strong> and build
+                innovative products that are useful, creative, and impactful.
+              </p>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {['Python', 'JavaScript', 'TypeScript', 'Next.js', 'React', 'Node.js', 'ESP32', 'AI/ML'].map((tech) => (
+                <span key={tech} className="px-3 py-1 rounded-full glass border border-blue-500/20 text-blue-300 text-sm">
+                  {tech}
+                </span>
+              ))}
+            </div>
           </motion.div>
         </div>
       </section>

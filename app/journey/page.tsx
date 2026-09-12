@@ -444,25 +444,36 @@ export default function JourneyPage() {
                     }}
                   >
                     {m.avatar ? (
-                      <Image src={m.avatar} alt={m.title} fill className="object-cover" />
+                      <>
+                        <Image src={m.avatar} alt={m.title} fill className="object-cover" />
+                        {m.locked && (
+                          <div className="absolute inset-0 bg-slate-950/45 backdrop-blur-[1px] flex items-center justify-center z-20">
+                            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center text-white shadow-[0_0_15px_rgba(59,130,246,0.9)]">
+                              <Lock size={16} strokeWidth={2.5} />
+                            </div>
+                          </div>
+                        )}
+                      </>
                     ) : m.id === 5 ? (
-                      <div className="w-full h-full bg-slate-900 border border-blue-500/30 flex flex-col items-center justify-center text-blue-400">
-                        <Lock size={22} className="text-blue-400 mb-0.5" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">B-Tech</span>
+                      <div className="w-full h-full bg-gradient-to-br from-slate-900 to-blue-950 border border-blue-500/40 flex flex-col items-center justify-center text-blue-400 p-1">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-600/40 border-2 border-blue-400 flex items-center justify-center text-white shadow-[0_0_15px_rgba(59,130,246,0.6)] mb-1">
+                          <Lock size={16} strokeWidth={2.5} />
+                        </div>
+                        <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-blue-200">B-Tech</span>
                       </div>
                     ) : (
                       <div className="w-full h-full bg-slate-900 border border-blue-500/30 flex items-center justify-center text-3xl font-bold text-blue-400">
                         🎓
                       </div>
                     )}
-
-                    {/* Corner lock badge for locked milestones */}
-                    {m.locked && (
-                      <div className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-slate-950/85 backdrop-blur-sm border border-blue-500/40 flex items-center justify-center text-blue-300 shadow-md z-20">
-                        <Lock size={12} />
-                      </div>
-                    )}
                   </motion.div>
+
+                  {/* Corner Floating Lock Badge */}
+                  {m.locked && (
+                    <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center text-white shadow-[0_0_12px_rgba(59,130,246,0.9)] z-30">
+                      <Lock size={13} strokeWidth={2.5} />
+                    </div>
+                  )}
 
                   {/* Label badge beneath marker */}
                   <div
@@ -472,7 +483,7 @@ export default function JourneyPage() {
                         : 'glass text-slate-300 group-hover:text-white border border-white/10'
                     }`}
                   >
-                    {m.locked && <Lock size={11} className={isSelected ? 'text-white' : 'text-blue-400'} />}
+                    {m.locked && <Lock size={12} strokeWidth={2.5} className={isSelected ? 'text-white' : 'text-blue-400'} />}
                     <span>{m.title}</span>
                   </div>
                 </div>

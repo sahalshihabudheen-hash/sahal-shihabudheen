@@ -335,49 +335,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CTA ───────────────────────────────────────────────────────────── */}
-      <section className="py-24 px-6">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="relative glass rounded-3xl p-12 text-center border border-blue-500/20 overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-cyan-600/5 pointer-events-none" />
-            <div className="relative z-10">
-              <div className="text-5xl mb-4">🚀</div>
-              <h2 className="text-4xl font-black mb-4">
-                Let&apos;s Build <span className="gradient-text">Something Epic</span>
-              </h2>
-              <p className="text-slate-400 mb-8 max-w-md mx-auto">
-                Got an idea? I&apos;m always open to collaborate, learn, and create something that matters.
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <motion.a
-                  href="https://github.com/sahalshihabudheen-hash"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg shadow-blue-500/30"
-                >
-                  <Github size={20} /> View GitHub
-                </motion.a>
-                <Link href="/projects">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 px-8 py-4 rounded-xl glass border border-blue-500/30 text-slate-300 hover:text-white font-semibold"
-                  >
-                    Explore Projects <ArrowRight size={18} />
-                  </motion.button>
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
     </div>
   )
 }

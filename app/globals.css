@@ -48,12 +48,13 @@ body {
   border: 1px solid rgba(59, 130, 246, 0.15);
 }
 
-/* Gradient text */
+/* Single accent text color */
 .gradient-text {
-  background: linear-gradient(135deg, #3b82f6, #06b6d4, #f59e0b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #3b82f6;
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: #3b82f6;
+  background-clip: unset;
 }
 
 /* Glow effects */

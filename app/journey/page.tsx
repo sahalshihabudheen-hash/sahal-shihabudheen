@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
-import { X, ChevronLeft, ChevronRight, MapPin, Calendar, Users, Trophy, Sparkles } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, MapPin, Calendar, Users, Trophy, Sparkles, Lock } from 'lucide-react'
 
 // ─── Journey Data with Real Photos & Zigzag Coordinates ────────────────────────
 const milestones = [
@@ -20,8 +20,9 @@ const milestones = [
     highlights: ['First computer class', 'Basic programming exploration', 'Science & tech enthusiast'],
     avatar: '/images/journey/10th/class-photo.png',
     images: ['/images/journey/10th/class-photo.png'],
-    x: 8,
+    x: 7,
     y: 76,
+    locked: false,
   },
   {
     id: 2,
@@ -43,8 +44,9 @@ const milestones = [
       '/images/journey/plus2/nss-3.jpg',
       '/images/journey/plus2/nss-4.jpg',
     ],
-    x: 28,
+    x: 24,
     y: 24,
+    locked: false,
   },
   {
     id: 3,
@@ -65,40 +67,60 @@ const milestones = [
       '/images/journey/expo/expo-4.jpg',
       '/images/journey/expo/expo-5.jpg',
     ],
-    x: 50,
+    x: 42,
     y: 78,
+    locked: false,
   },
   {
     id: 4,
     year: '2024–Present',
     title: 'Madin Polytechnic',
-    subtitle: 'Engineering College',
+    subtitle: 'Engineering College (Current)',
     color: 'from-blue-600 to-blue-500',
     glowColor: 'rgba(59,130,246,0.5)',
     borderColor: 'border-blue-500',
     description:
-      'Diving deep into engineering at Madin Polytechnic College. Hands-on hardware, microcontrollers, networking, and building full-stack software applications daily.',
-    highlights: ['Diploma in Engineering', 'IoT & Embedded Systems', 'Collaborative Tech Culture', 'Photos arriving soon!'],
+      'Currently studying and diving deep into engineering at Madin Polytechnic College. Hands-on hardware, microcontrollers, networking, and building full-stack software applications daily.',
+    highlights: ['Diploma in Engineering', 'IoT & Embedded Systems', 'Collaborative Tech Culture', 'Active Journey Node'],
     avatar: null, // placeholder badge
     images: [],
-    x: 72,
+    x: 59,
     y: 24,
+    locked: false,
   },
   {
     id: 5,
-    year: 'Future',
+    year: 'Next Goal',
+    title: 'B-Tech',
+    subtitle: 'Engineering Degree',
+    color: 'from-blue-600 to-blue-500',
+    glowColor: 'rgba(59,130,246,0.5)',
+    borderColor: 'border-blue-500',
+    description:
+      'The upcoming degree milestone: Pursuing B-Tech in Computer Science / Artificial Intelligence to master advanced algorithms, machine learning architectures, and modern software engineering.',
+    highlights: ['B-Tech Degree in Engineering', 'Advanced Machine Learning & AI', 'System Architecture & CS', 'Upcoming Academic Frontier'],
+    avatar: null,
+    images: [],
+    x: 76,
+    y: 78,
+    locked: true,
+  },
+  {
+    id: 6,
+    year: 'Future Vision',
     title: 'AI Engineer',
     subtitle: 'The Vision & Beyond',
     color: 'from-blue-600 to-blue-500',
     glowColor: 'rgba(59,130,246,0.5)',
     borderColor: 'border-blue-500',
     description:
-      'The overarching goal: Becoming a pioneer AI Engineer and architecting transformative AI-driven products, intelligent agents, and automated solutions for the world.',
+      'The overarching destination: Becoming a pioneering AI Engineer architecting transformative AI-driven products, intelligent agents, and automated solutions for the world.',
     highlights: ['Autonomous AI Systems', 'Next-gen LLM Applications', 'Impactful Tech Products', 'Endless Innovation'],
     avatar: '/images/main-pic.jpg',
     images: ['/images/main-pic.jpg'],
-    x: 92,
-    y: 76,
+    x: 93,
+    y: 24,
+    locked: true,
   },
 ]
 
@@ -198,6 +220,15 @@ function DetailPanel({
           {milestone.avatar ? (
             <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/40 shadow-lg flex-shrink-0">
               <Image src={milestone.avatar} alt={milestone.title} fill className="object-cover" />
+              {milestone.locked && (
+                <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-slate-950/80 border border-blue-400 flex items-center justify-center text-blue-300 shadow-md">
+                  <Lock size={10} />
+                </div>
+              )}
+            </div>
+          ) : milestone.id === 5 ? (
+            <div className="w-16 h-16 rounded-2xl bg-slate-900 border-2 border-blue-400/50 flex flex-col items-center justify-center text-blue-400 flex-shrink-0">
+              <Lock size={20} className="text-blue-400" />
             </div>
           ) : (
             <div className="w-16 h-16 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center text-2xl font-bold flex-shrink-0">
@@ -208,8 +239,16 @@ function DetailPanel({
             <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-black/20 text-xs font-semibold tracking-wider mb-1">
               <Calendar size={12} />
               {milestone.year}
+              {milestone.locked && (
+                <span className="inline-flex items-center gap-1 ml-1 px-1.5 py-0.5 rounded bg-blue-500/30 text-[10px] text-blue-200">
+                  <Lock size={9} /> Locked Stage
+                </span>
+              )}
             </div>
-            <h3 className="text-2xl sm:text-3xl font-black">{milestone.title}</h3>
+            <h3 className="text-2xl sm:text-3xl font-black flex items-center gap-2">
+              {milestone.title}
+              {milestone.locked && <Lock size={20} className="text-blue-400" />}
+            </h3>
             <p className="text-white/80 text-sm">{milestone.subtitle}</p>
           </div>
         </div>
@@ -262,7 +301,14 @@ function DetailPanel({
           </div>
         ) : (
           <div className="p-6 rounded-2xl border border-dashed border-white/15 text-center text-slate-400 text-sm">
-            📸 <span className="font-semibold text-white">Madin Polytechnic Photos</span> will be added here soon!
+            {milestone.locked ? (
+              <div className="flex flex-col items-center gap-2 text-blue-300">
+                <Lock size={24} className="text-blue-400" />
+                <span><strong className="text-white">{milestone.title}</strong> is an upcoming locked stage — journey in progress!</span>
+              </div>
+            ) : (
+              <span>📸 <strong className="text-white">{milestone.title} Photos</strong> will be added here soon!</span>
+            )}
           </div>
         )}
       </div>
@@ -320,7 +366,7 @@ export default function JourneyPage() {
 
               {/* Road bed shadow / subtle background track */}
               <path
-                d="M 0 350 L 50 350 Q 80 350 105 320 L 255 140 Q 280 110 305 140 L 475 330 Q 500 360 525 330 L 695 140 Q 720 110 745 140 L 895 320 Q 920 350 950 350 L 1000 350"
+                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 590 110 615 135 L 735 335 Q 760 360 785 335 L 905 135 Q 930 110 955 110 L 1000 110"
                 stroke="rgba(59, 130, 246, 0.15)"
                 strokeWidth="24"
                 fill="none"
@@ -330,7 +376,7 @@ export default function JourneyPage() {
 
               {/* Luminous Road Glow */}
               <path
-                d="M 0 350 L 50 350 Q 80 350 105 320 L 255 140 Q 280 110 305 140 L 475 330 Q 500 360 525 330 L 695 140 Q 720 110 745 140 L 895 320 Q 920 350 950 350 L 1000 350"
+                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 590 110 615 135 L 735 335 Q 760 360 785 335 L 905 135 Q 930 110 955 110 L 1000 110"
                 stroke="#3b82f6"
                 strokeWidth="8"
                 fill="none"
@@ -342,7 +388,7 @@ export default function JourneyPage() {
 
               {/* Solid Blue Path */}
               <path
-                d="M 0 350 L 50 350 Q 80 350 105 320 L 255 140 Q 280 110 305 140 L 475 330 Q 500 360 525 330 L 695 140 Q 720 110 745 140 L 895 320 Q 920 350 950 350 L 1000 350"
+                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 590 110 615 135 L 735 335 Q 760 360 785 335 L 905 135 Q 930 110 955 110 L 1000 110"
                 stroke="#3b82f6"
                 strokeWidth="3.5"
                 fill="none"
@@ -352,7 +398,7 @@ export default function JourneyPage() {
 
               {/* Animated Center Flow Line */}
               <motion.path
-                d="M 0 350 L 50 350 Q 80 350 105 320 L 255 140 Q 280 110 305 140 L 475 330 Q 500 360 525 330 L 695 140 Q 720 110 745 140 L 895 320 Q 920 350 950 350 L 1000 350"
+                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 590 110 615 135 L 735 335 Q 760 360 785 335 L 905 135 Q 930 110 955 110 L 1000 110"
                 stroke="#93c5fd"
                 strokeWidth="2"
                 strokeDasharray="10 14"
@@ -399,22 +445,35 @@ export default function JourneyPage() {
                   >
                     {m.avatar ? (
                       <Image src={m.avatar} alt={m.title} fill className="object-cover" />
+                    ) : m.id === 5 ? (
+                      <div className="w-full h-full bg-slate-900 border border-blue-500/30 flex flex-col items-center justify-center text-blue-400">
+                        <Lock size={22} className="text-blue-400 mb-0.5" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">B-Tech</span>
+                      </div>
                     ) : (
                       <div className="w-full h-full bg-slate-900 border border-blue-500/30 flex items-center justify-center text-3xl font-bold text-blue-400">
                         🎓
+                      </div>
+                    )}
+
+                    {/* Corner lock badge for locked milestones */}
+                    {m.locked && (
+                      <div className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-slate-950/85 backdrop-blur-sm border border-blue-500/40 flex items-center justify-center text-blue-300 shadow-md z-20">
+                        <Lock size={12} />
                       </div>
                     )}
                   </motion.div>
 
                   {/* Label badge beneath marker */}
                   <div
-                    className={`absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                    className={`absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
                       isSelected
                         ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
                         : 'glass text-slate-300 group-hover:text-white border border-white/10'
                     }`}
                   >
-                    {m.title}
+                    {m.locked && <Lock size={11} className={isSelected ? 'text-white' : 'text-blue-400'} />}
+                    <span>{m.title}</span>
                   </div>
                 </div>
               )
@@ -438,11 +497,19 @@ export default function JourneyPage() {
                 <div className="relative w-5 h-5 rounded-full overflow-hidden border border-white/40">
                   <Image src={m.avatar} alt={m.title} fill className="object-cover" />
                 </div>
+              ) : m.locked ? (
+                <Lock size={13} className="text-blue-400" />
               ) : (
                 <span>🎓</span>
               )}
               <span>{m.title}</span>
-              <span className="text-white/60 text-[11px] font-normal">({m.year})</span>
+              {m.locked ? (
+                <span className="text-blue-300/80 text-[11px] font-medium flex items-center gap-0.5">
+                  <Lock size={9} /> ({m.year})
+                </span>
+              ) : (
+                <span className="text-white/60 text-[11px] font-normal">({m.year})</span>
+              )}
             </button>
           ))}
         </div>

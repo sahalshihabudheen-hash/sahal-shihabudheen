@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
   Brain, Globe, Bot, Music, Cpu, Zap,
-  ArrowRight, Sparkles, Code2, Layers
+  ArrowRight, Code2, Layers
 } from 'lucide-react'
 
 // ─── Typing Effect ────────────────────────────────────────────────────────────
@@ -111,16 +111,6 @@ export default function HomePage() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
           {/* Left — Text */}
           <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-blue-500/30 text-sm text-blue-300 mb-6"
-            >
-              <Sparkles size={14} className="text-yellow-400" />
-              Open to opportunities
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 30 }}

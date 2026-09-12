@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
-import { motion, AnimatePresence, useInView } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight, MapPin, Calendar, Users, Trophy, Sparkles, Lock } from 'lucide-react'
 
 // ─── Journey Data with Real Photos & Zigzag Coordinates ────────────────────────
@@ -320,8 +320,6 @@ function DetailPanel({
 export default function JourneyPage() {
   const [active, setActive] = useState<number>(2) // default to +1 & +2
   const [galleryIdx, setGalleryIdx] = useState<number | null>(null)
-  const mapRef = useRef<HTMLDivElement>(null)
-  const inView = useInView(mapRef, { once: true })
 
   const activeMilestone = milestones.find((m) => m.id === active) || milestones[0]
 
@@ -337,13 +335,13 @@ export default function JourneyPage() {
             My <span className="gradient-text">Milestone Map</span>
           </h1>
           <p className="text-slate-400 max-w-xl mx-auto text-sm sm:text-base">
-            Click directly on any photo marker along the road to open up the memories, moments, and projects of that stage!
+            Click directly on any photo marker to open up the memories, moments, and projects of that stage!
           </p>
         </motion.div>
       </div>
 
       {/* ROADMAP SECTION — FULL WIDTH ZIGZAG FROM ONE END OF SCREEN TO THE OTHER */}
-      <div ref={mapRef} className="w-full relative py-6 overflow-hidden">
+      <div className="w-full relative py-6 overflow-hidden">
         {/* Subtle background glow */}
         <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -351,66 +349,6 @@ export default function JourneyPage() {
         {/* Responsive map container */}
         <div className="w-full overflow-x-auto scrollbar-none">
           <div className="relative min-w-[860px] w-full h-[460px] sm:h-[500px]">
-            {/* SVG Zigzag Road */}
-            <svg
-              viewBox="0 0 1000 460"
-              className="absolute inset-0 w-full h-full pointer-events-none"
-              preserveAspectRatio="none"
-            >
-              <defs>
-                <filter id="blueGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="6" result="blur" />
-                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-              </defs>
-
-              {/* Road bed shadow / subtle background track */}
-              <path
-                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 590 110 615 135 L 735 335 Q 760 360 785 335 L 905 135 Q 930 110 955 110 L 1000 110"
-                stroke="rgba(59, 130, 246, 0.15)"
-                strokeWidth="24"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              {/* Luminous Road Glow */}
-              <path
-                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 590 110 615 135 L 735 335 Q 760 360 785 335 L 905 135 Q 930 110 955 110 L 1000 110"
-                stroke="#3b82f6"
-                strokeWidth="8"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity="0.5"
-                filter="url(#blueGlowFilter)"
-              />
-
-              {/* Solid Blue Path */}
-              <path
-                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 590 110 615 135 L 735 335 Q 760 360 785 335 L 905 135 Q 930 110 955 110 L 1000 110"
-                stroke="#3b82f6"
-                strokeWidth="3.5"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              {/* Animated Center Flow Line */}
-              <motion.path
-                d="M 0 350 L 45 350 Q 70 350 95 320 L 215 135 Q 240 110 265 135 L 395 335 Q 420 360 445 335 L 565 135 Q 590 110 615 135 L 735 335 Q 760 360 785 335 L 905 135 Q 930 110 955 110 L 1000 110"
-                stroke="#93c5fd"
-                strokeWidth="2"
-                strokeDasharray="10 14"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                initial={{ pathLength: 0 }}
-                animate={inView ? { pathLength: 1 } : {}}
-                transition={{ duration: 2.2, ease: 'easeInOut' }}
-              />
-            </svg>
-
             {/* REAL PHOTO MARKERS on the Zigzag vertices */}
             {milestones.map((m) => {
               const isSelected = active === m.id

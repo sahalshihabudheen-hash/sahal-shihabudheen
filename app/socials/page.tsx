@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ExternalLink, Copy, Check, Share2, Sparkles, Radio } from 'lucide-react'
+import { ExternalLink, Copy, Check, Share2, Sparkles, Zap, ShieldCheck } from 'lucide-react'
 import { FaInstagram, FaDiscord, FaGithub } from 'react-icons/fa6'
 
 const DISCORD_USER_ID = '1146350719507648643'
+const FALLBACK_DECORATION = 'a_f7e6e3ba47bf54880bf601735d5fb9bf'
 
 interface LanyardData {
   discord_user: {
@@ -14,6 +15,18 @@ interface LanyardData {
     avatar: string | null
     global_name?: string
     display_name?: string
+    avatar_decoration_data?: {
+      asset: string
+      sku_id?: string
+    } | null
+    collectibles?: {
+      nameplate?: {
+        asset: string
+        label?: string
+        palette?: string
+        sku_id?: string
+      }
+    } | null
   }
   discord_status: 'online' | 'idle' | 'dnd' | 'offline'
   activities?: Array<{
@@ -27,7 +40,6 @@ interface LanyardData {
 export default function SocialsPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [lanyard, setLanyard] = useState<LanyardData | null>(null)
-  const [loadingDiscord, setLoadingDiscord] = useState(true)
 
   useEffect(() => {
     let isMounted = true
@@ -41,8 +53,6 @@ export default function SocialsPage() {
         }
       } catch (err) {
         console.error('Failed to fetch Lanyard Discord data:', err)
-      } finally {
-        if (isMounted) setLoadingDiscord(false)
       }
     }
 
@@ -62,23 +72,28 @@ export default function SocialsPage() {
     }, 2500)
   }
 
-  // Discord Avatar & Status
+  // Discord Avatar, Decoration & Presence
   const discordAvatarUrl = lanyard?.discord_user?.avatar
     ? `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${lanyard.discord_user.avatar}.png?size=256`
     : `https://api.lanyard.rest/${DISCORD_USER_ID}.png`
 
-  const discordStatus = lanyard?.discord_status || 'offline'
+  const avatarDecorationAsset =
+    lanyard?.discord_user?.avatar_decoration_data?.asset || FALLBACK_DECORATION
+
+  const nameplate = lanyard?.discord_user?.collectibles?.nameplate
+
+  const discordStatus = lanyard?.discord_status || 'dnd'
   const discordDisplayName =
     lanyard?.discord_user?.global_name || lanyard?.discord_user?.display_name || '𝐒𝐀𝐇𝐀𝐋_𝐏𝐑𝐎'
 
   const statusConfig = {
-    online: { color: 'bg-emerald-500', label: 'Online', text: 'text-emerald-400', ring: 'ring-emerald-500/30' },
-    idle: { color: 'bg-amber-500', label: 'Idle / Away', text: 'text-amber-400', ring: 'ring-amber-500/30' },
-    dnd: { color: 'bg-rose-500', label: 'Do Not Disturb', text: 'text-rose-400', ring: 'ring-rose-500/30' },
-    offline: { color: 'bg-slate-500', label: 'Offline', text: 'text-slate-400', ring: 'ring-slate-500/30' },
+    online: { color: 'bg-emerald-500', label: 'Online', text: 'text-emerald-400' },
+    idle: { color: 'bg-amber-500', label: 'Idle / Away', text: 'text-amber-400' },
+    dnd: { color: 'bg-rose-500', label: 'Do Not Disturb', text: 'text-rose-400' },
+    offline: { color: 'bg-slate-500', label: 'Offline', text: 'text-slate-400' },
   }
 
-  const currentStatus = statusConfig[discordStatus] || statusConfig.offline
+  const currentStatus = statusConfig[discordStatus] || statusConfig.dnd
 
   return (
     <div className="min-h-screen grid-bg pt-24 pb-20">
@@ -127,7 +142,6 @@ export default function SocialsPage() {
                   {/* Instagram Story Gradient Ring */}
                   <div className="w-16 h-16 rounded-full p-[2.5px] bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 shadow-lg shadow-rose-500/25 group-hover:scale-105 transition-transform duration-300">
                     <div className="w-full h-full rounded-full p-[2px] bg-[#030712] overflow-hidden">
-                      {/* Real photo DP */}
                       <img
                         src="/images/main-pic.jpg"
                         alt="Sahal Instagram DP"
@@ -172,55 +186,95 @@ export default function SocialsPage() {
             </div>
           </motion.div>
 
-          {/* ─── 2. DISCORD CARD (LIVE LANYARD API) ────────────────────── */}
+          {/* ─── 2. DISCORD CARD (WITH AVATAR DECORATION & PROFILE EFFECTS) ─ */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.12 }}
             whileHover={{ y: -5 }}
-            className="relative rounded-2xl glass p-7 border border-white/10 hover:border-indigo-500/50 transition-all duration-300 flex flex-col justify-between group"
+            className="relative rounded-2xl glass p-7 border border-indigo-500/40 hover:border-cyan-400/60 transition-all duration-300 flex flex-col justify-between group overflow-hidden"
             style={{
-              boxShadow: '0 8px 32px 0 rgba(99, 102, 241, 0.22)',
+              boxShadow: '0 8px 36px 0 rgba(56, 189, 248, 0.22)',
             }}
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-indigo-500/15 transition-all duration-300" />
+            {/* ⚡ DISCORD PROFILE EFFECT AURA (Electric Storm / Cyber Aura) */}
+            <div className="absolute top-0 inset-x-0 h-36 overflow-hidden pointer-events-none rounded-t-2xl">
+              {/* Electric ambient glow */}
+              <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/15 via-blue-600/10 to-transparent" />
+              {/* Cyber lightning beam across top edge */}
+              <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-pulse" />
+              {/* Pulsing energy sphere behind avatar */}
+              <motion.div
+                className="absolute -top-16 -left-10 w-44 h-44 bg-cyan-500/20 rounded-full blur-3xl"
+                animate={{ scale: [1, 1.3, 1], opacity: [0.35, 0.7, 0.35] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <motion.div
+                className="absolute top-2 right-4 w-32 h-32 bg-blue-600/20 rounded-full blur-2xl"
+                animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            </div>
 
-            <div>
-              {/* Top Bar: Lanyard DP & Status */}
+            <div className="relative z-10">
+              {/* Top Bar: Live Avatar + Animated Avatar Decoration + Status Badge */}
               <div className="flex items-center justify-between mb-5">
-                <div className="relative">
-                  {/* Discord Avatar Ring */}
-                  <div className="w-16 h-16 rounded-full p-[2.5px] bg-gradient-to-tr from-indigo-500 to-blue-500 shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-300">
-                    <div className="w-full h-full rounded-full p-[2px] bg-[#030712] overflow-hidden">
-                      {/* Real Discord DP from Lanyard */}
+                <div className="relative flex items-center justify-center">
+                  {/* Outer avatar container sized to fit avatar + decoration glow */}
+                  <div className="relative w-18 h-18 flex items-center justify-center">
+                    {/* The Avatar Base */}
+                    <div className="w-15 h-15 rounded-full bg-[#030712] overflow-hidden border border-cyan-500/30 shadow-md">
                       <img
                         src={discordAvatarUrl}
                         alt="Sahal Discord Avatar"
                         className="w-full h-full object-cover rounded-full"
                       />
                     </div>
+
+                    {/* ⚡ Real Animated Discord Avatar Decoration Overlay */}
+                    {avatarDecorationAsset && (
+                      <img
+                        src={`https://cdn.discordapp.com/avatar-decoration-presets/${avatarDecorationAsset}.png?size=256&passthrough=true`}
+                        alt="Discord Avatar Decoration"
+                        className="absolute inset-0 w-full h-full object-contain pointer-events-none z-20 select-none scale-[1.24] -translate-y-[1px]"
+                      />
+                    )}
+
+                    {/* Live Discord Status Dot */}
+                    <span
+                      className={`absolute bottom-0 right-0 z-30 w-4.5 h-4.5 rounded-full border-2 border-[#030712] ${currentStatus.color} shadow-lg ring-2 ring-black/50`}
+                      title={`Discord Status: ${currentStatus.label}`}
+                    />
+                  </div>
+                </div>
+
+                {/* Live Status & Profile Effect Badge */}
+                <div className="flex flex-col items-end gap-1.5">
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium glass border border-cyan-500/30 shadow-sm shadow-cyan-500/10">
+                    <span className={`w-2 h-2 rounded-full ${currentStatus.color} animate-pulse`} />
+                    <span className={currentStatus.text}>{currentStatus.label}</span>
                   </div>
 
-                  {/* Live Status Indicator Dot */}
-                  <span
-                    className={`absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full border-2 border-[#030712] ${currentStatus.color} shadow-md`}
-                    title={`Discord Status: ${currentStatus.label}`}
-                  />
-                </div>
-
-                {/* Live Status Badge */}
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium glass border border-indigo-500/20">
-                  <span className={`w-2 h-2 rounded-full ${currentStatus.color} animate-pulse`} />
-                  <span className={currentStatus.text}>{currentStatus.label}</span>
+                  {/* Collectible Profile Nameplate tag */}
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-rose-950/50 border border-rose-500/30 text-rose-300 text-[10px] font-semibold tracking-wide shadow-sm">
+                    <span className="text-rose-400">♈</span>
+                    <span>Aries Crimson</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Title & Display Name / Handle */}
-              <div className="flex items-baseline gap-2 mb-0.5">
-                <h2 className="text-2xl font-bold text-white">Discord</h2>
-                <span className="text-xs text-indigo-300 font-medium">({discordDisplayName})</span>
+              {/* Title, Collectibles & Handle */}
+              <div className="mb-0.5 flex items-center flex-wrap gap-2">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-1.5">
+                  Discord
+                  <Zap size={16} className="text-cyan-400 animate-pulse" />
+                </h2>
+                <span className="text-xs text-cyan-300 font-medium px-2 py-0.5 rounded-md bg-cyan-950/40 border border-cyan-500/30">
+                  {discordDisplayName}
+                </span>
               </div>
-              <div className="inline-block text-indigo-400 font-mono text-sm mb-3 font-semibold">
+
+              <div className="inline-block text-cyan-400 font-mono text-sm mb-3 font-semibold">
                 sahal_pro
               </div>
 
@@ -231,13 +285,13 @@ export default function SocialsPage() {
             </div>
 
             {/* Action: Copy username */}
-            <div className="pt-2">
+            <div className="pt-2 relative z-10">
               <button
                 onClick={() => handleCopy('sahal_pro', 'discord-card')}
                 className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium text-sm transition-all duration-200 ${
                   copiedId === 'discord-card'
                     ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/25 hover:shadow-indigo-600/40'
+                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/25 hover:shadow-cyan-500/30'
                 }`}
               >
                 {copiedId === 'discord-card' ? (
@@ -275,7 +329,6 @@ export default function SocialsPage() {
                   {/* GitHub Blue Gradient Ring */}
                   <div className="w-16 h-16 rounded-full p-[2.5px] bg-gradient-to-tr from-blue-600 via-blue-500 to-cyan-400 shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform duration-300">
                     <div className="w-full h-full rounded-full p-[2px] bg-[#030712] overflow-hidden">
-                      {/* GitHub avatar */}
                       <img
                         src="https://github.com/sahalshihabudheen-hash.png"
                         alt="Sahal GitHub Avatar"

@@ -1,77 +1,58 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ExternalLink, Copy, Check, Share2, Sparkles } from 'lucide-react'
+import { ExternalLink, Copy, Check, Share2, Sparkles, Radio } from 'lucide-react'
 import { FaInstagram, FaDiscord, FaGithub } from 'react-icons/fa6'
 
-interface SocialPlatform {
-  id: string
-  name: string
-  handle: string
-  url?: string
-  icon: React.ComponentType<{ size?: number; className?: string }>
-  badge: string
-  accentColor: string
-  glowColor: string
-  borderHover: string
-  description: string
-  copyValue?: string
-  isDirectLink?: boolean
-  buttonText: string
-}
+const DISCORD_USER_ID = '1146350719507648643'
 
-const socials: SocialPlatform[] = [
-  {
-    id: 'instagram',
-    name: 'Instagram',
-    handle: '@sahal._shihab',
-    url: 'https://www.instagram.com/sahal._shihab/',
-    icon: FaInstagram,
-    badge: 'Photos & Stories',
-    accentColor: 'from-pink-500 via-purple-500 to-indigo-500',
-    glowColor: 'rgba(236, 72, 153, 0.25)',
-    borderHover: 'hover:border-pink-500/50',
-    description:
-      'Follow my journey, behind-the-scenes moments, campus vibes at Madin Polytechnic, tech projects, and daily life highlights.',
-    isDirectLink: true,
-    buttonText: 'Open Instagram Profile',
-  },
-  {
-    id: 'discord',
-    name: 'Discord',
-    handle: 'sahal_pro',
-    copyValue: 'sahal_pro',
-    url: 'https://discord.com',
-    icon: FaDiscord,
-    badge: 'Real-time Chat',
-    accentColor: 'from-indigo-500 via-blue-500 to-cyan-500',
-    glowColor: 'rgba(99, 102, 241, 0.25)',
-    borderHover: 'hover:border-indigo-500/50',
-    description:
-      'Connect with me on Discord for tech discussions, developer collaborations, bot building, or sharing ideas.',
-    isDirectLink: false,
-    buttonText: 'Copy Discord Tag',
-  },
-  {
-    id: 'github',
-    name: 'GitHub',
-    handle: '@sahalshihabudheen-hash',
-    url: 'https://github.com/sahalshihabudheen-hash',
-    icon: FaGithub,
-    badge: 'Open Source Code',
-    accentColor: 'from-blue-600 via-blue-500 to-cyan-400',
-    glowColor: 'rgba(59, 130, 246, 0.25)',
-    borderHover: 'hover:border-blue-500/50',
-    description:
-      'Explore my codebases, repositories, full-stack web applications, AI models, and embedded IoT firmware experiments.',
-    isDirectLink: true,
-    buttonText: 'View Repositories',
-  },
-]
+interface LanyardData {
+  discord_user: {
+    id: string
+    username: string
+    avatar: string | null
+    global_name?: string
+    display_name?: string
+  }
+  discord_status: 'online' | 'idle' | 'dnd' | 'offline'
+  activities?: Array<{
+    name: string
+    type: number
+    state?: string
+    details?: string
+  }>
+}
 
 export default function SocialsPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [lanyard, setLanyard] = useState<LanyardData | null>(null)
+  const [loadingDiscord, setLoadingDiscord] = useState(true)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const fetchLanyard = async () => {
+      try {
+        const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`)
+        const json = await res.json()
+        if (isMounted && json.success && json.data) {
+          setLanyard(json.data)
+        }
+      } catch (err) {
+        console.error('Failed to fetch Lanyard Discord data:', err)
+      } finally {
+        if (isMounted) setLoadingDiscord(false)
+      }
+    }
+
+    fetchLanyard()
+    const interval = setInterval(fetchLanyard, 30000)
+    return () => {
+      isMounted = false
+      clearInterval(interval)
+    }
+  }, [])
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text)
@@ -80,6 +61,24 @@ export default function SocialsPage() {
       setCopiedId(null)
     }, 2500)
   }
+
+  // Discord Avatar & Status
+  const discordAvatarUrl = lanyard?.discord_user?.avatar
+    ? `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${lanyard.discord_user.avatar}.png?size=256`
+    : `https://api.lanyard.rest/${DISCORD_USER_ID}.png`
+
+  const discordStatus = lanyard?.discord_status || 'offline'
+  const discordDisplayName =
+    lanyard?.discord_user?.global_name || lanyard?.discord_user?.display_name || '𝐒𝐀𝐇𝐀𝐋_𝐏𝐑𝐎'
+
+  const statusConfig = {
+    online: { color: 'bg-emerald-500', label: 'Online', text: 'text-emerald-400', ring: 'ring-emerald-500/30' },
+    idle: { color: 'bg-amber-500', label: 'Idle / Away', text: 'text-amber-400', ring: 'ring-amber-500/30' },
+    dnd: { color: 'bg-rose-500', label: 'Do Not Disturb', text: 'text-rose-400', ring: 'ring-rose-500/30' },
+    offline: { color: 'bg-slate-500', label: 'Offline', text: 'text-slate-400', ring: 'ring-slate-500/30' },
+  }
+
+  const currentStatus = statusConfig[discordStatus] || statusConfig.offline
 
   return (
     <div className="min-h-screen grid-bg pt-24 pb-20">
@@ -102,94 +101,224 @@ export default function SocialsPage() {
             My <span className="gradient-text">Socials</span>
           </h1>
           <p className="text-slate-400 max-w-xl mx-auto text-base sm:text-lg">
-            Find me across the web. Whether you want to talk code, collaborate on a project, or just say hi — I&apos;m always happy to connect!
+            Find me across the web with real-time presence &amp; direct links. Whether you want to talk code, collaborate, or say hi — let&apos;s connect!
           </p>
         </motion.div>
 
         {/* Social Cards Grid */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          {socials.map((platform, idx) => {
-            const Icon = platform.icon
-            const isCopied = copiedId === platform.id
+          {/* ─── 1. INSTAGRAM CARD ─────────────────────────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0 }}
+            whileHover={{ y: -5 }}
+            className="relative rounded-2xl glass p-7 border border-white/10 hover:border-pink-500/50 transition-all duration-300 flex flex-col justify-between group"
+            style={{
+              boxShadow: '0 8px 32px 0 rgba(236, 72, 153, 0.22)',
+            }}
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-pink-500/15 transition-all duration-300" />
 
-            return (
-              <motion.div
-                key={platform.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.12 }}
-                whileHover={{ y: -5 }}
-                className={`relative rounded-2xl glass p-7 border border-white/10 ${platform.borderHover} transition-all duration-300 flex flex-col justify-between group`}
-                style={{
-                  boxShadow: `0 8px 32px 0 ${platform.glowColor}`,
-                }}
+            <div>
+              {/* Top Bar: DP & Badge */}
+              <div className="flex items-center justify-between mb-5">
+                <div className="relative">
+                  {/* Instagram Story Gradient Ring */}
+                  <div className="w-16 h-16 rounded-full p-[2.5px] bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 shadow-lg shadow-rose-500/25 group-hover:scale-105 transition-transform duration-300">
+                    <div className="w-full h-full rounded-full p-[2px] bg-[#030712] overflow-hidden">
+                      {/* Real photo DP */}
+                      <img
+                        src="/images/main-pic.jpg"
+                        alt="Sahal Instagram DP"
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    </div>
+                  </div>
+                  {/* IG Icon Badge */}
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-tr from-rose-500 to-purple-600 border-2 border-[#030712] flex items-center justify-center text-white shadow">
+                    <FaInstagram size={11} />
+                  </div>
+                </div>
+
+                <span className="px-3 py-1 rounded-full text-xs font-medium glass border border-pink-500/20 text-pink-300">
+                  Photos &amp; Stories
+                </span>
+              </div>
+
+              {/* Title & Handle */}
+              <h2 className="text-2xl font-bold text-white mb-0.5">Instagram</h2>
+              <div className="inline-block text-pink-400 font-mono text-sm mb-3 font-semibold">
+                @sahal._shihab
+              </div>
+
+              {/* Description */}
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                Follow my journey, campus moments from Madin Polytechnic, tech updates, stories, and daily life highlights.
+              </p>
+            </div>
+
+            {/* Action */}
+            <div className="pt-2">
+              <a
+                href="https://www.instagram.com/sahal._shihab/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 hover:opacity-95 text-white font-medium text-sm transition-all duration-200 shadow-md shadow-pink-500/25 hover:shadow-pink-500/40"
               >
-                {/* Subtle card glow inside */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-blue-500/15 transition-all duration-300" />
+                <span>Open Instagram Profile</span>
+                <ExternalLink size={15} />
+              </a>
+            </div>
+          </motion.div>
 
-                <div>
-                  {/* Top Bar: Icon & Badge */}
-                  <div className="flex items-center justify-between mb-5">
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${platform.accentColor} flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition-transform duration-300`}>
-                      <Icon size={26} />
+          {/* ─── 2. DISCORD CARD (LIVE LANYARD API) ────────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.12 }}
+            whileHover={{ y: -5 }}
+            className="relative rounded-2xl glass p-7 border border-white/10 hover:border-indigo-500/50 transition-all duration-300 flex flex-col justify-between group"
+            style={{
+              boxShadow: '0 8px 32px 0 rgba(99, 102, 241, 0.22)',
+            }}
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-indigo-500/15 transition-all duration-300" />
+
+            <div>
+              {/* Top Bar: Lanyard DP & Status */}
+              <div className="flex items-center justify-between mb-5">
+                <div className="relative">
+                  {/* Discord Avatar Ring */}
+                  <div className="w-16 h-16 rounded-full p-[2.5px] bg-gradient-to-tr from-indigo-500 to-blue-500 shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform duration-300">
+                    <div className="w-full h-full rounded-full p-[2px] bg-[#030712] overflow-hidden">
+                      {/* Real Discord DP from Lanyard */}
+                      <img
+                        src={discordAvatarUrl}
+                        alt="Sahal Discord Avatar"
+                        className="w-full h-full object-cover rounded-full"
+                      />
                     </div>
-                    <span className="px-3 py-1 rounded-full text-xs font-medium glass border border-white/10 text-slate-300">
-                      {platform.badge}
-                    </span>
                   </div>
 
-                  {/* Title & Handle */}
-                  <h2 className="text-2xl font-bold text-white mb-1">{platform.name}</h2>
-                  <div className="inline-block text-blue-400 font-mono text-sm mb-3">
-                    {platform.handle}
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                    {platform.description}
-                  </p>
+                  {/* Live Status Indicator Dot */}
+                  <span
+                    className={`absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full border-2 border-[#030712] ${currentStatus.color} shadow-md`}
+                    title={`Discord Status: ${currentStatus.label}`}
+                  />
                 </div>
 
-                {/* Actions */}
-                <div className="pt-2">
-                  {platform.isDirectLink && platform.url ? (
-                    <a
-                      href={platform.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-all duration-200 shadow-md shadow-blue-500/20 hover:shadow-blue-500/40"
-                    >
-                      <span>{platform.buttonText}</span>
-                      <ExternalLink size={15} />
-                    </a>
-                  ) : (
-                    <div className="flex flex-col gap-2">
-                      <button
-                        onClick={() => platform.copyValue && handleCopy(platform.copyValue, platform.id)}
-                        className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium text-sm transition-all duration-200 ${
-                          isCopied
-                            ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                            : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/40'
-                        }`}
-                      >
-                        {isCopied ? (
-                          <>
-                            <Check size={16} />
-                            <span>Copied: {platform.handle}!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy size={16} />
-                            <span>Copy Username: {platform.handle}</span>
-                          </>
-                        )}
-                      </button>
+                {/* Live Status Badge */}
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium glass border border-indigo-500/20">
+                  <span className={`w-2 h-2 rounded-full ${currentStatus.color} animate-pulse`} />
+                  <span className={currentStatus.text}>{currentStatus.label}</span>
+                </div>
+              </div>
+
+              {/* Title & Display Name / Handle */}
+              <div className="flex items-baseline gap-2 mb-0.5">
+                <h2 className="text-2xl font-bold text-white">Discord</h2>
+                <span className="text-xs text-indigo-300 font-medium">({discordDisplayName})</span>
+              </div>
+              <div className="inline-block text-indigo-400 font-mono text-sm mb-3 font-semibold">
+                sahal_pro
+              </div>
+
+              {/* Description */}
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                Connect with me on Discord for real-time developer talk, bot creation, tech collabs, or hanging out.
+              </p>
+            </div>
+
+            {/* Action: Copy username */}
+            <div className="pt-2">
+              <button
+                onClick={() => handleCopy('sahal_pro', 'discord-card')}
+                className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium text-sm transition-all duration-200 ${
+                  copiedId === 'discord-card'
+                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/25 hover:shadow-indigo-600/40'
+                }`}
+              >
+                {copiedId === 'discord-card' ? (
+                  <>
+                    <Check size={16} />
+                    <span>Copied: sahal_pro!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy size={16} />
+                    <span>Copy Username: sahal_pro</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </motion.div>
+
+          {/* ─── 3. GITHUB CARD (LIVE GITHUB AVATAR) ───────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.24 }}
+            whileHover={{ y: -5 }}
+            className="relative rounded-2xl glass p-7 border border-white/10 hover:border-blue-500/50 transition-all duration-300 flex flex-col justify-between group"
+            style={{
+              boxShadow: '0 8px 32px 0 rgba(59, 130, 246, 0.22)',
+            }}
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-blue-500/15 transition-all duration-300" />
+
+            <div>
+              {/* Top Bar: GitHub Avatar & Badge */}
+              <div className="flex items-center justify-between mb-5">
+                <div className="relative">
+                  {/* GitHub Blue Gradient Ring */}
+                  <div className="w-16 h-16 rounded-full p-[2.5px] bg-gradient-to-tr from-blue-600 via-blue-500 to-cyan-400 shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform duration-300">
+                    <div className="w-full h-full rounded-full p-[2px] bg-[#030712] overflow-hidden">
+                      {/* GitHub avatar */}
+                      <img
+                        src="https://github.com/sahalshihabudheen-hash.png"
+                        alt="Sahal GitHub Avatar"
+                        className="w-full h-full object-cover rounded-full"
+                      />
                     </div>
-                  )}
+                  </div>
+                  {/* GitHub Icon Badge */}
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-slate-900 border-2 border-[#030712] flex items-center justify-center text-white shadow">
+                    <FaGithub size={11} />
+                  </div>
                 </div>
-              </motion.div>
-            )
-          })}
+
+                <span className="px-3 py-1 rounded-full text-xs font-medium glass border border-blue-500/20 text-blue-300">
+                  Open Source Code
+                </span>
+              </div>
+
+              {/* Title & Handle */}
+              <h2 className="text-2xl font-bold text-white mb-0.5">GitHub</h2>
+              <div className="inline-block text-blue-400 font-mono text-sm mb-3 font-semibold">
+                @sahalshihabudheen-hash
+              </div>
+
+              {/* Description */}
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                Explore my repositories, star projects, and check out codebases in Next.js, AI, and embedded electronics.
+              </p>
+            </div>
+
+            {/* Action */}
+            <div className="pt-2">
+              <a
+                href="https://github.com/sahalshihabudheen-hash"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-all duration-200 shadow-md shadow-blue-500/25 hover:shadow-blue-500/40"
+              >
+                <span>View Repositories</span>
+                <ExternalLink size={15} />
+              </a>
+            </div>
+          </motion.div>
         </div>
 
         {/* Bottom Banner */}
@@ -207,7 +336,7 @@ export default function SocialsPage() {
               Have a project or cool idea in mind?
             </h3>
             <p className="text-slate-400 text-sm mb-6">
-              Drop me a message on Instagram or Discord. Let&apos;s turn visionary concepts into high-impact digital experiences.
+              Drop me a message on Instagram or add me on Discord. Let&apos;s build high-impact digital experiences together.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a

@@ -5,32 +5,31 @@ import Image from 'next/image'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight, MapPin, Calendar, Users, Trophy, Sparkles } from 'lucide-react'
 
-// ─── Journey Data with Real Photos & Exact Coordinates ──────────────────────────
+// ─── Journey Data with Real Photos & Zigzag Coordinates ────────────────────────
 const milestones = [
   {
     id: 1,
     year: '2020–2022',
     title: '10th Class',
     subtitle: 'School Foundations',
-    color: 'from-violet-600 to-purple-500',
-    glowColor: 'rgba(139,92,246,0.6)',
-    borderColor: 'border-violet-500',
+    color: 'from-blue-600 to-blue-500',
+    glowColor: 'rgba(59,130,246,0.5)',
+    borderColor: 'border-blue-500',
     description:
       'The foundational beginning! School days where I first discovered coding, science, and the power of computers. These early years shaped my technical curiosity.',
     highlights: ['First computer class', 'Basic programming exploration', 'Science & tech enthusiast'],
     avatar: '/images/journey/10th/class-photo.png',
     images: ['/images/journey/10th/class-photo.png'],
-    // Coordinates placed accurately along the road line
-    x: 14,
-    y: 72,
+    x: 8,
+    y: 76,
   },
   {
     id: 2,
     year: '2024–2026',
     title: '+1 & +2',
     subtitle: 'Higher Secondary & Squad',
-    color: 'from-blue-600 to-cyan-500',
-    glowColor: 'rgba(59,130,246,0.6)',
+    color: 'from-blue-600 to-blue-500',
+    glowColor: 'rgba(59,130,246,0.5)',
     borderColor: 'border-blue-500',
     description:
       'Higher secondary journey (2024–2026) packed with memorable experiences, brotherhood, NSS community work, grand Onam celebrations, and leveling up my programming skills!',
@@ -44,17 +43,17 @@ const milestones = [
       '/images/journey/plus2/nss-3.jpg',
       '/images/journey/plus2/nss-4.jpg',
     ],
-    x: 32,
-    y: 36,
+    x: 28,
+    y: 24,
   },
   {
     id: 3,
     year: '2024',
     title: 'Expo 2024',
     subtitle: 'District-Level Innovation',
-    color: 'from-amber-500 to-orange-500',
-    glowColor: 'rgba(245,158,11,0.6)',
-    borderColor: 'border-amber-500',
+    color: 'from-blue-600 to-blue-500',
+    glowColor: 'rgba(59,130,246,0.5)',
+    borderColor: 'border-blue-500',
     description:
       'Represented at the District Level Expo 2024! Showcased innovative tech projects, interacted with bright minds across the district, and gained huge recognition.',
     highlights: ['District Level Representation', 'Tech Project Showcase', 'Innovation Networking', 'Honored & Recognized'],
@@ -66,40 +65,40 @@ const milestones = [
       '/images/journey/expo/expo-4.jpg',
       '/images/journey/expo/expo-5.jpg',
     ],
-    x: 55,
-    y: 58,
+    x: 50,
+    y: 78,
   },
   {
     id: 4,
     year: '2024–Present',
     title: 'Madin Polytechnic',
     subtitle: 'Engineering College',
-    color: 'from-emerald-500 to-teal-500',
-    glowColor: 'rgba(16,185,129,0.6)',
-    borderColor: 'border-emerald-500',
+    color: 'from-blue-600 to-blue-500',
+    glowColor: 'rgba(59,130,246,0.5)',
+    borderColor: 'border-blue-500',
     description:
       'Diving deep into engineering at Madin Polytechnic College. Hands-on hardware, microcontrollers, networking, and building full-stack software applications daily.',
     highlights: ['Diploma in Engineering', 'IoT & Embedded Systems', 'Collaborative Tech Culture', 'Photos arriving soon!'],
-    avatar: null, // placeholder badge until user drops pics
+    avatar: null, // placeholder badge
     images: [],
-    x: 75,
-    y: 32,
+    x: 72,
+    y: 24,
   },
   {
     id: 5,
     year: 'Future',
     title: 'AI Engineer',
     subtitle: 'The Vision & Beyond',
-    color: 'from-pink-600 to-rose-500',
-    glowColor: 'rgba(244,63,94,0.6)',
-    borderColor: 'border-pink-500',
+    color: 'from-blue-600 to-blue-500',
+    glowColor: 'rgba(59,130,246,0.5)',
+    borderColor: 'border-blue-500',
     description:
       'The overarching goal: Becoming a pioneer AI Engineer and architecting transformative AI-driven products, intelligent agents, and automated solutions for the world.',
     highlights: ['Autonomous AI Systems', 'Next-gen LLM Applications', 'Impactful Tech Products', 'Endless Innovation'],
     avatar: '/images/main-pic.jpg',
     images: ['/images/main-pic.jpg'],
-    x: 91,
-    y: 65,
+    x: 92,
+    y: 76,
   },
 ]
 
@@ -223,7 +222,7 @@ function DetailPanel({
         {/* Highlights */}
         <div>
           <h4 className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2">
-            <Trophy size={14} className="text-amber-400" /> Key Milestones & Memories
+            <Trophy size={14} className="text-blue-400" /> Key Milestones & Memories
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {milestone.highlights.map((h) => (
@@ -239,7 +238,7 @@ function DetailPanel({
         {milestone.images.length > 0 ? (
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-cyan-400 flex items-center gap-2">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-blue-400 flex items-center gap-2">
                 <Users size={14} /> Memories & Photos ({milestone.images.length})
               </h4>
               <span className="text-xs text-slate-400">Click to view full photo</span>
@@ -251,11 +250,11 @@ function DetailPanel({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={() => onOpenPhoto(i)}
-                  className="relative aspect-square rounded-xl overflow-hidden cursor-pointer border border-white/10 hover:border-cyan-400/50 shadow-md group"
+                  className="relative aspect-square rounded-xl overflow-hidden cursor-pointer border border-white/10 hover:border-blue-400/50 shadow-md group"
                 >
                   <Image src={img} alt={`Memory ${i + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-300" />
                   <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Sparkles size={16} className="text-cyan-300" />
+                    <Sparkles size={16} className="text-blue-300" />
                   </div>
                 </motion.div>
               ))}
@@ -297,71 +296,76 @@ export default function JourneyPage() {
         </motion.div>
       </div>
 
-      {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
-        {/* ROADMAP CANVAS */}
-        <div ref={mapRef} className="glass rounded-3xl border border-blue-500/20 p-4 sm:p-8 relative overflow-hidden shadow-2xl">
-          {/* Subtle glow nodes */}
-          <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* ROADMAP SECTION — FULL WIDTH ZIGZAG FROM ONE END OF SCREEN TO THE OTHER */}
+      <div ref={mapRef} className="w-full relative py-6 overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Map canvas container */}
-          <div className="relative w-full h-[380px] sm:h-[460px] bg-slate-950/60 rounded-2xl border border-white/5 overflow-hidden">
-            {/* SVG Highway Path */}
+        {/* Responsive map container */}
+        <div className="w-full overflow-x-auto scrollbar-none">
+          <div className="relative min-w-[860px] w-full h-[460px] sm:h-[500px]">
+            {/* SVG Zigzag Road */}
             <svg
               viewBox="0 0 1000 460"
               className="absolute inset-0 w-full h-full pointer-events-none"
               preserveAspectRatio="none"
             >
               <defs>
-                <linearGradient id="roadGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#8b5cf6" />
-                  <stop offset="30%" stopColor="#3b82f6" />
-                  <stop offset="55%" stopColor="#f59e0b" />
-                  <stop offset="78%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#ec4899" />
-                </linearGradient>
-                <filter id="roadGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
+                <filter id="blueGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
                   <feGaussianBlur stdDeviation="6" result="blur" />
                   <feComposite in="SourceGraphic" in2="blur" operator="over" />
                 </filter>
               </defs>
 
-              {/* Road bed shadow */}
+              {/* Road bed shadow / subtle background track */}
               <path
-                d="M 140 330 C 220 330 260 165 320 165 C 400 165 480 267 550 267 C 640 267 690 147 750 147 C 820 147 860 300 910 300"
-                stroke="rgba(15, 23, 42, 0.9)"
-                strokeWidth="32"
+                d="M 0 350 L 50 350 Q 80 350 105 320 L 255 140 Q 280 110 305 140 L 475 330 Q 500 360 525 330 L 695 140 Q 720 110 745 140 L 895 320 Q 920 350 950 350 L 1000 350"
+                stroke="rgba(59, 130, 246, 0.15)"
+                strokeWidth="24"
                 fill="none"
                 strokeLinecap="round"
+                strokeLinejoin="round"
               />
 
-              {/* Glowing Road Border */}
+              {/* Luminous Road Glow */}
               <path
-                d="M 140 330 C 220 330 260 165 320 165 C 400 165 480 267 550 267 C 640 267 690 147 750 147 C 820 147 860 300 910 300"
-                stroke="url(#roadGradient)"
-                strokeWidth="14"
+                d="M 0 350 L 50 350 Q 80 350 105 320 L 255 140 Q 280 110 305 140 L 475 330 Q 500 360 525 330 L 695 140 Q 720 110 745 140 L 895 320 Q 920 350 950 350 L 1000 350"
+                stroke="#3b82f6"
+                strokeWidth="8"
                 fill="none"
                 strokeLinecap="round"
-                opacity="0.8"
-                filter="url(#roadGlowFilter)"
+                strokeLinejoin="round"
+                opacity="0.5"
+                filter="url(#blueGlowFilter)"
               />
 
-              {/* Center dashed line */}
+              {/* Solid Blue Path */}
+              <path
+                d="M 0 350 L 50 350 Q 80 350 105 320 L 255 140 Q 280 110 305 140 L 475 330 Q 500 360 525 330 L 695 140 Q 720 110 745 140 L 895 320 Q 920 350 950 350 L 1000 350"
+                stroke="#3b82f6"
+                strokeWidth="3.5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Animated Center Flow Line */}
               <motion.path
-                d="M 140 330 C 220 330 260 165 320 165 C 400 165 480 267 550 267 C 640 267 690 147 750 147 C 820 147 860 300 910 300"
-                stroke="#ffffff"
-                strokeWidth="2.5"
+                d="M 0 350 L 50 350 Q 80 350 105 320 L 255 140 Q 280 110 305 140 L 475 330 Q 500 360 525 330 L 695 140 Q 720 110 745 140 L 895 320 Q 920 350 950 350 L 1000 350"
+                stroke="#93c5fd"
+                strokeWidth="2"
                 strokeDasharray="10 14"
                 fill="none"
                 strokeLinecap="round"
+                strokeLinejoin="round"
                 initial={{ pathLength: 0 }}
                 animate={inView ? { pathLength: 1 } : {}}
-                transition={{ duration: 2.5, ease: 'easeInOut' }}
+                transition={{ duration: 2.2, ease: 'easeInOut' }}
               />
             </svg>
 
-            {/* REAL PHOTO MARKERS on the Map */}
+            {/* REAL PHOTO MARKERS on the Zigzag vertices */}
             {milestones.map((m) => {
               const isSelected = active === m.id
               return (
@@ -374,29 +378,29 @@ export default function JourneyPage() {
                   {/* Outer pulse wave */}
                   {isSelected && (
                     <motion.div
-                      className={`absolute inset-0 rounded-full bg-gradient-to-r ${m.color}`}
-                      animate={{ scale: [1, 2.2], opacity: [0.7, 0] }}
+                      className="absolute inset-0 rounded-2xl bg-blue-500"
+                      animate={{ scale: [1, 1.8], opacity: [0.6, 0] }}
                       transition={{ duration: 1.8, repeat: Infinity }}
                     />
                   )}
 
                   {/* Photo Pin Avatar */}
                   <motion.div
-                    whileHover={{ scale: 1.2 }}
+                    whileHover={{ scale: 1.15 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-3 shadow-2xl transition-all duration-300 ${
+                    className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 shadow-2xl transition-all duration-300 ${
                       isSelected
-                        ? `border-white ring-4 ring-offset-2 ring-offset-slate-950 ${m.borderColor}`
-                        : 'border-white/50 opacity-90 group-hover:opacity-100 group-hover:border-white'
+                        ? 'border-blue-400 ring-4 ring-blue-500/40'
+                        : 'border-white/30 opacity-90 group-hover:opacity-100 group-hover:border-white'
                     }`}
                     style={{
-                      boxShadow: isSelected ? `0 0 30px ${m.glowColor}` : '0 10px 20px rgba(0,0,0,0.5)',
+                      boxShadow: isSelected ? '0 0 35px rgba(59,130,246,0.6)' : '0 10px 25px rgba(0,0,0,0.6)',
                     }}
                   >
                     {m.avatar ? (
                       <Image src={m.avatar} alt={m.title} fill className="object-cover" />
                     ) : (
-                      <div className={`w-full h-full bg-gradient-to-br ${m.color} flex items-center justify-center text-2xl font-bold text-white`}>
+                      <div className="w-full h-full bg-slate-900 border border-blue-500/30 flex items-center justify-center text-3xl font-bold text-blue-400">
                         🎓
                       </div>
                     )}
@@ -404,9 +408,9 @@ export default function JourneyPage() {
 
                   {/* Label badge beneath marker */}
                   <div
-                    className={`absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-2.5 py-0.5 rounded-full text-xs font-bold transition-all ${
+                    className={`absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition-all ${
                       isSelected
-                        ? `bg-gradient-to-r ${m.color} text-white shadow-lg`
+                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
                         : 'glass text-slate-300 group-hover:text-white border border-white/10'
                     }`}
                   >
@@ -416,34 +420,36 @@ export default function JourneyPage() {
               )
             })}
           </div>
-
-          {/* Quick Selector Bar */}
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            {milestones.map((m) => (
-              <button
-                key={m.id}
-                onClick={() => setActive(m.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                  active === m.id
-                    ? `bg-gradient-to-r ${m.color} text-white shadow-lg shadow-blue-500/20 scale-105`
-                    : 'glass text-slate-400 hover:text-white border border-white/10'
-                }`}
-              >
-                {m.avatar ? (
-                  <div className="relative w-5 h-5 rounded-full overflow-hidden border border-white/40">
-                    <Image src={m.avatar} alt={m.title} fill className="object-cover" />
-                  </div>
-                ) : (
-                  <span>🎓</span>
-                )}
-                <span>{m.title}</span>
-                <span className="text-white/60 text-[11px] font-normal">({m.year})</span>
-              </button>
-            ))}
-          </div>
         </div>
 
-        {/* ACTIVE MILESTONE DETAIL PANEL */}
+        {/* Quick Selector Bar */}
+        <div className="max-w-5xl mx-auto px-6 mt-8 flex flex-wrap justify-center gap-3">
+          {milestones.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setActive(m.id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                active === m.id
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-105'
+                  : 'glass text-slate-400 hover:text-white border border-white/10'
+              }`}
+            >
+              {m.avatar ? (
+                <div className="relative w-5 h-5 rounded-full overflow-hidden border border-white/40">
+                  <Image src={m.avatar} alt={m.title} fill className="object-cover" />
+                </div>
+              ) : (
+                <span>🎓</span>
+              )}
+              <span>{m.title}</span>
+              <span className="text-white/60 text-[11px] font-normal">({m.year})</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ACTIVE MILESTONE DETAIL PANEL */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 mt-12">
         <AnimatePresence mode="wait">
           <DetailPanel
             key={activeMilestone.id}
